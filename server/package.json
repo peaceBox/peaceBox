@@ -8,7 +8,7 @@
     "scripts": {
         "lint": "eslint . --fix",
         "test": "jest",
-        "precommit": "lint && test"
+        "precommit": "yarn lint && yarn test"
     },
     "dependencies": {},
     "devDependencies": {
