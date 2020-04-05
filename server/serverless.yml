@@ -1,0 +1,12 @@
+service:
+  name: peaceBox
+
+provider:
+  name: aws
+  runtime: 10.19
+  profile: credentialのプロファイル名
+  region: ap-northeast-1
+
+functions:
+  peaceBox:
+    handler: handler.peaceBox
