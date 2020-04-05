@@ -13,18 +13,20 @@
         "generate": "eslint './**/*.{js,ts,vue}'  --fix && nuxt generate",
         "lint-and-generate": "eslint './**/*.{js,ts,vue}' && nuxt generate",
         "test": "echo 'skip tests (there is no test)'",
-        "lint": "eslint './**/*.{js,ts,vue}' --fix"
+        "lint": "eslint './src/**/*.{js,ts,vue}' --fix"
     },
     "dependencies": {
+        "nuxt": "^2.12.2"
+    },
+    "devDependencies": {
+        "babel-eslint": "^10.1.0",
+        "cross-env": "^7.0.2",
+        "prettier": "^2.0.2",
         "eslint": "^6.8.0",
+        "eslint-config-google": "^0.14.0",
         "eslint-config-prettier": "^6.10.1",
         "eslint-loader": "^4.0.0",
         "eslint-plugin-prettier": "^3.1.2",
-        "eslint-plugin-vue": "^6.2.2",
-        "nuxt": "^2.12.2",
-        "prettier": "^2.0.2"
-    },
-    "devDependencies": {
-        "babel-eslint": "^10.1.0"
+        "eslint-plugin-vue": "^6.2.2"
     }
 }
