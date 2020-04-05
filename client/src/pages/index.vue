@@ -1,6 +1,11 @@
 <template>
-  <h1>Hello</h1>
+    <helloWorld />
 </template>
 <script>
-export default {}
+import helloWorld from '../components/helloWorld'
+export default {
+    components: {
+        helloWorld
+    },
+}
 </script>
