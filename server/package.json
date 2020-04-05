@@ -1,0 +1,8 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "PeaceBox",
+  "license": "MIT",
+  "private": false
+}
