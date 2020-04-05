@@ -19,7 +19,7 @@ jobs:
       - name: Install Dependencies
         run: |
           cd server
-          yarn install serverless -g
+          yarn global add serverless
           yarn install
 
       - name: Deploy to Lambda
