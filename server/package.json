@@ -4,5 +4,9 @@
   "main": "index.js",
   "author": "PeaceBox",
   "license": "MIT",
-  "private": false
+  "private": false,
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^6.8.0"
+  }
 }
