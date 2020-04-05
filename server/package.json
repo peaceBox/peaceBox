@@ -6,7 +6,8 @@
     "license": "MIT",
     "private": false,
     "scripts": {
-        "lint": "eslint . --fix"
+        "lint": "eslint . --fix",
+        "test": "jest"
     },
     "dependencies": {},
     "devDependencies": {
@@ -14,7 +15,8 @@
         "eslint-config-google": "^0.14.0",
         "eslint-config-prettier": "6.9.0",
         "eslint-plugin-prettier": "^3.1.2",
-        "prettier": "^2.0.2",
-        "jest": "^25.2.7"
+        "husky": "^4.2.3",
+        "jest": "^25.2.7",
+        "prettier": "^2.0.2"
     }
 }
