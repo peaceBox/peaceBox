@@ -3,10 +3,10 @@ service:
 
 provider:
   name: aws
-  runtime: 10.19
-  profile: credentialのプロファイル名
+  runtime: nodejs10.x
+  profile: ""
   region: ap-northeast-1
 
 functions:
   peaceBox:
-    handler: handler.peaceBox
+    handler: handler.hello
