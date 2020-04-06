@@ -12,7 +12,7 @@ module.exports.hello = async (event) => {
     switch (path) {
         case '/authorize':
             // authorizeFuncを呼び出し
-            res = authorizeFunc();
+            res = await authorizeFunc();
             break;
         case '/callback':
             // callbackFuncを呼び出し
@@ -23,7 +23,7 @@ module.exports.hello = async (event) => {
     return res;
 };
 
-const authorizeFunc = () => {
+const authorizeFunc = async () => {
 
     // eslint-disable-next-line new-cap
     const oauth = OAuth({
