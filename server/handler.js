@@ -74,8 +74,59 @@ const authorizeFunc = async () => {
     return response;
 };
 
-const callbackFunc = (event) => {
+const callbackFunc = async (event) => {
     console.log(event);
+
+    // パラメータを取得
+    const params = event.queryStringParameters;
+
+    const oauthToken = params.oauth_token;
+    const oauthVerifier = params.oauth_verifier;
+
+    const cookie = event.headers.cookie;
+    const cookieOauthToken = cookie.slice(12);
+
+    if (oauthToken !== cookieOauthToken) {
+        console.error(`oauthToken: ${oauthToken}, cookieOauthToken: ${cookieOauthToken}`);
+        const response = {
+            statusCode: 401,
+            body: JSON.stringify('Error!!')
+        };
+        return response;
+    }
+
+    // eslint-disable-next-line new-cap
+    const oauth = OAuth({
+        consumer: {
+            key: process.env.consumer_key,
+            secret: process.env.consumer_secret
+        },
+        signature_method: 'HMAC-SHA1',
+        hash_function(baseString, key) {
+            return crypto.createHmac('sha1', key).update(baseString).digest('base64');
+        }
+    });
+
+    const requestData = {
+        url: 'https://api.twitter.com/oauth/request_token',
+        method: 'POST',
+        data: {
+            'oauth_token': oauthToken,
+            'oauth_verifier': oauthVerifier
+        }
+    };
+
+    const authData = oauth.authorize(requestData);
+    requestData.headers = oauth.toHeader(authData);
+
+    const tokenResponse = await axios(requestData).catch((e) => {
+        throw new Error({
+            status: e.response.status
+        });
+    });
+
+    console.log(tokenResponse.data);
+
     const response = {
         statusCode: 200,
         body: JSON.stringify('Hello from Lambda!')
