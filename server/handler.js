@@ -127,6 +127,47 @@ const callbackFunc = async (event) => {
 
     console.log(tokenResponse.data);
 
+    const dataArr = tokenResponse.data.split('&');
+    const userOauthToken = dataArr[0].slice(12);
+    const oauthTokenSecret = dataArr[1].slice(19);
+    const userId = dataArr[2].slice(8);
+    const screenName = dataArr[3].slice(12);
+
+    console.log(userOauthToken);
+
+    const publicKey = process.env.publicKey.split('<br>').join('\n');
+    const userOauthTokenEncrypted = crypto.publicEncrypt(publicKey, Buffer.from(userOauthToken)).toString('base64');
+    const oauthTokenSecretEncrypted = crypto.publicEncrypt(publicKey, Buffer.from(oauthTokenSecret)).toString('base64');
+
+    const param = {
+        TableName: 'peaceBoxUserTable',
+        Key: { // 更新したい項目をプライマリキー(及びソートキー)によって１つ指定
+            ID: userId
+        },
+        ExpressionAttributeNames: {
+            '#u': 'userOauthTokenEncrypted',
+            '#o': 'oauthTokenSecretEncrypted',
+            '#s': 'screenName',
+        },
+        ExpressionAttributeValues: {
+            ':userOauthTokenEncrypted': userOauthTokenEncrypted,
+            ':oauthTokenSecretEncrypted': oauthTokenSecretEncrypted,
+            ':screenName': screenName,
+        },
+        UpdateExpression: 'SET #u = :userOauthTokenEncrypted, #o = :oauthTokenSecretEncrypted, #s = :screenName'
+    };
+    dynamoDocument.update(param, (err, data) => {
+        if (err) {
+            console.error(err);
+        } else {
+            console.log(data);
+        }
+    });
+
+    const privateKey = process.env.privateKey.split('<br>').join('\n');
+    const decrypted = crypto.privateDecrypt(privateKey, Buffer.from(encrypted, 'base64')).toString('utf8');
+    console.log(decrypted);
+
     const response = {
         statusCode: 200,
         body: JSON.stringify('Hello from Lambda!')
