@@ -67,8 +67,9 @@ const authorizeFunc = async () => {
         statusCode: 302,
         body: '',
         headers: {
-            Location: `https://api.twitter.com/oauth/authenticate?oauth_token=${oauthToken}`
-        }
+            'Location': `https://api.twitter.com/oauth/authenticate?oauth_token=${oauthToken}`,
+            'Set-Cookie': `oauth_token=${oauthToken};HttpOnly`
+        },
     };
     return response;
 };
