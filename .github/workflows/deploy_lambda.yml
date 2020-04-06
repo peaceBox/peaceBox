@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  deploy:
+  deploy-lambda:
     name: Auto Deploy
     runs-on: ubuntu-18.04
     steps:
@@ -48,3 +48,20 @@ jobs:
           job_name: "*Deploy Lambda*"
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+
+  deploy-s3:
+    name: Auto deploy to S3
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@master
+        with:
+          node-version: 10.x
+      - run: cd client && yarn install
+      - run: cd client && yarn build
+      - uses: actions/aws/cli@master
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        with:
+          args: s3 sync client/dist/ s3://peacebox-frontend --delete
