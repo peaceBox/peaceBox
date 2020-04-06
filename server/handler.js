@@ -120,9 +120,9 @@ const callbackFunc = async (event) => {
     requestData.headers = oauth.toHeader(authData);
 
     const tokenResponse = await axios(requestData).catch((e) => {
-        throw new Error({
+        throw new Error(JSON.stringify({
             status: e.response.status
-        });
+        }));
     });
 
     console.log(tokenResponse.data);
