@@ -108,7 +108,7 @@ const callbackFunc = async (event) => {
     });
 
     const requestData = {
-        url: 'https://api.twitter.com/oauth/request_token',
+        url: 'https://api.twitter.com/oauth/access_token',
         method: 'POST',
         data: {
             'oauth_token': oauthToken,
@@ -121,7 +121,7 @@ const callbackFunc = async (event) => {
 
     const tokenResponse = await axios(requestData).catch((e) => {
         throw new Error(JSON.stringify({
-            status: e.response.status
+            status: e.response.data
         }));
     });
 
