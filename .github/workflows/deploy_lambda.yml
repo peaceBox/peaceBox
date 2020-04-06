@@ -67,7 +67,9 @@ jobs:
         run: |
           pwd
           ls -a
-          aws s3 sync client/dist/ s3://peacebox-frontend --delete
+          echo "========="
+          ls client
+          aws s3 sync ./client/dist/ s3://peacebox-frontend --delete
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
