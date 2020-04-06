@@ -3,6 +3,8 @@
 const axios = require('axios');
 const OAuth = require('oauth-1.0a');
 const crypto = require('crypto');
+const AWS = require('aws-sdk');
+const dynamoDocument = new AWS.DynamoDB.DocumentClient();
 const callback = 'https://auypdqzjyi.execute-api.ap-northeast-1.amazonaws.com/prod';
 
 module.exports.hello = async (event) => {
