@@ -1,4 +1,4 @@
-name: Auto Deploy to AWS Lambda
+name: Production deploy
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy-lambda:
-    name: Auto Deploy
+    name: Auto deploy to AWS Lambda
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@master
@@ -50,7 +50,7 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
   deploy-s3:
-    name: Auto deploy to S3
+    name: Auto deploy to AWS S3
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
