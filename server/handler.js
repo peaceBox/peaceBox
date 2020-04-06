@@ -6,6 +6,8 @@ const crypto = require('crypto');
 const callback = 'https://auypdqzjyi.execute-api.ap-northeast-1.amazonaws.com/prod';
 
 module.exports.hello = async (event) => {
+    // パスを取得
+    const path = event.path;
     // レスポンスを定義
     let res;
     // パスによって条件分岐
