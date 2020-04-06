@@ -1,5 +1,5 @@
 module.exports = {
-    tabWidth: 4, //Indent
+    tabWidth: 2, //Indent
     singleQuote: true,
     trailingComma: 'all',
 };
