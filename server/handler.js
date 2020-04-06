@@ -5,7 +5,7 @@ const OAuth = require('oauth-1.0a');
 const crypto = require('crypto');
 const callback = 'https://auypdqzjyi.execute-api.ap-northeast-1.amazonaws.com/prod';
 
-exports.handler = async (event) => {
+module.exports.hello = async (event) => {
 
     // const nonce = uuidv4();
 
