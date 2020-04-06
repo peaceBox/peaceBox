@@ -61,7 +61,7 @@ jobs:
       - name: Install dependencies
         run: cd client && yarn install
       - name: Build pages
-        run: cd client && yarn build
+        run: cd client && yarn generate:deploy
       - uses: chrislennon/action-aws-cli@v1.1
       - name: File Upload
         run: |
