@@ -144,7 +144,7 @@ const callbackFunc = async (event) => {
     const param = {
         TableName: 'peaceBoxUserTable',
         Key: { // 更新したい項目をプライマリキー(及びソートキー)によって１つ指定
-            ID: userId
+            userId: userId
         },
         ExpressionAttributeNames: {
             '#u': 'userOauthTokenEncrypted',
@@ -158,16 +158,18 @@ const callbackFunc = async (event) => {
         },
         UpdateExpression: 'SET #u = :userOauthTokenEncrypted, #o = :oauthTokenSecretEncrypted, #s = :screenName'
     };
-    dynamoDocument.update(param, (err, data) => {
-        if (err) {
-            console.error(err);
-        } else {
-            console.log(data);
-        }
+    await new Promise((resolve, reject) => {
+        dynamoDocument.update(param, (err, data) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(data);
+            }
+        });
     });
 
     const privateKey = process.env.privateKey.split('<br>').join('\n');
-    const decrypted = crypto.privateDecrypt(privateKey, Buffer.from(encrypted, 'base64')).toString('utf8');
+    const decrypted = crypto.privateDecrypt(privateKey, Buffer.from(userOauthTokenEncrypted, 'base64')).toString('utf8');
     console.log(decrypted);
 
     const response = {
