@@ -6,8 +6,24 @@ const crypto = require('crypto');
 const callback = 'https://auypdqzjyi.execute-api.ap-northeast-1.amazonaws.com/prod';
 
 module.exports.hello = async (event) => {
+    // レスポンスを定義
+    let res;
+    // パスによって条件分岐
+    switch (path) {
+        case '/authorize':
+            // authorizeFuncを呼び出し
+            res = authorizeFunc();
+            break;
+        case '/callback':
+            // callbackFuncを呼び出し
+            res = await callbackFunc(event);
+            break;
+    }
 
-    // const nonce = uuidv4();
+    return res;
+};
+
+const authorizeFunc = () => {
 
     // eslint-disable-next-line new-cap
     const oauth = OAuth({
@@ -25,7 +41,7 @@ module.exports.hello = async (event) => {
         url: 'https://api.twitter.com/oauth/request_token',
         method: 'POST',
         data: {
-            'oauth_callback': `${callback}/oauth`
+            'oauth_callback': `${callback}/callback`
         }
     };
 
@@ -47,10 +63,19 @@ module.exports.hello = async (event) => {
 
     const response = {
         statusCode: 302,
-        body: JSON.stringify('Hello from Lambda!'),
+        body: '',
         headers: {
             Location: `https://api.twitter.com/oauth/authenticate?oauth_token=${oauthToken}`
         }
+    };
+    return response;
+};
+
+const callbackFunc = (event) => {
+    console.log(event);
+    const response = {
+        statusCode: 200,
+        body: JSON.stringify('Hello from Lambda!')
     };
     return response;
 };
