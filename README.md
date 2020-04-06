@@ -47,3 +47,14 @@
 ## CI/CD周り
 `master` branchにpushすると、`/server`がAWS Lambdaに、`/client` がAWS S3にそれぞれbuild,deployされます。
 
+### manual deploy
+
+#### Client
+```zsh
+% aws s3 sync ./client/dist/ s3://peacebox-frontend --delete
+```
+#### Server
+(serverlessをglobalにインストールしておいてください)
+```zsh
+sls deploy
+```
