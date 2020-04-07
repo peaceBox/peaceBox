@@ -5,7 +5,7 @@ const OAuth = require('oauth-1.0a');
 const crypto = require('crypto');
 const AWS = require('aws-sdk');
 const dynamoDocument = new AWS.DynamoDB.DocumentClient();
-const callback = 'https://auypdqzjyi.execute-api.ap-northeast-1.amazonaws.com/prod';
+const callback = 'https://api.peacebox.shinbunbun.info/authorize';
 
 module.exports.hello = async (event) => {
     // パスを取得
