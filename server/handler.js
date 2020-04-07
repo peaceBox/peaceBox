@@ -15,12 +15,16 @@ module.exports.hello = async (event) => {
     // パスによって条件分岐
     switch (path) {
         case '/authorize':
-            // authorizeFuncを呼び出し
             res = await authorizeFunc();
             break;
         case '/callback':
-            // callbackFuncを呼び出し
             res = await callbackFunc(event);
+            break;
+        case '/registerQuestion':
+            res = await registerQuestionFunc(event);
+            break;
+        case '/getQuestion':
+            res = await registerQuestionFunc(event);
             break;
     }
 
@@ -175,6 +179,18 @@ const callbackFunc = async (event) => {
     const response = {
         statusCode: 200,
         body: JSON.stringify('Hello from Lambda!')
+    };
+    return response;
+};
+
+const registerQuestionFunc = (event) => {
+    const question = event.body.question;
+
+
+
+    const response = {
+        statusCode: 200,
+        body: JSON.stringify('success')
     };
     return response;
 };
