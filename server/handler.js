@@ -1,5 +1,5 @@
 // const oauthSignature = require('oauth-signature');
-// const uuidv4 = require('uuid/v4');
+const uuidv4 = require('uuid/v4');
 const axios = require('axios');
 const OAuth = require('oauth-1.0a');
 const crypto = require('crypto');
@@ -145,6 +145,8 @@ const callbackFunc = async (event) => {
     const userOauthTokenEncrypted = crypto.publicEncrypt(publicKey, Buffer.from(userOauthToken)).toString('base64');
     const oauthTokenSecretEncrypted = crypto.publicEncrypt(publicKey, Buffer.from(oauthTokenSecret)).toString('base64');
 
+    const accessToken = uuidv4().toString('base64');
+
     const param = {
         TableName: 'peaceBoxUserTable',
         Key: { // 更新したい項目をプライマリキー(及びソートキー)によって１つ指定
@@ -154,13 +156,15 @@ const callbackFunc = async (event) => {
             '#u': 'userOauthTokenEncrypted',
             '#o': 'oauthTokenSecretEncrypted',
             '#s': 'screenName',
+            '#a': 'accessToken',
         },
         ExpressionAttributeValues: {
             ':userOauthTokenEncrypted': userOauthTokenEncrypted,
             ':oauthTokenSecretEncrypted': oauthTokenSecretEncrypted,
             ':screenName': screenName,
+            ':accessToken': accessToken,
         },
-        UpdateExpression: 'SET #u = :userOauthTokenEncrypted, #o = :oauthTokenSecretEncrypted, #s = :screenName'
+        UpdateExpression: 'SET #u = :userOauthTokenEncrypted, #o = :oauthTokenSecretEncrypted, #s = :screenName, #a = :accessToken'
     };
     await new Promise((resolve, reject) => {
         dynamoDocument.update(param, (err, data) => {
