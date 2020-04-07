@@ -1,6 +1,7 @@
 module.exports = {
-  srcDir: "./src",
-  head: {
-    titleTemplate: "%s - PeaceBox",
-  },
+    srcDir: './src',
+    head: {
+        titleTemplate: '%s - PeaceBox',
+    },
+    modules: ['@nuxtjs/vuetify'],
 }
