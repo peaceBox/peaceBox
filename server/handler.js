@@ -184,7 +184,7 @@ const callbackFunc = async (event) => {
 };
 
 const registerQuestionFunc = (event) => {
-    const question = event.body.question;
+    // const question = event.body.question;
 
 
 
