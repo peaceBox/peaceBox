@@ -24,7 +24,7 @@ module.exports.hello = async (event) => {
             res = await registerQuestionFunc(event);
             break;
         case '/getQuestion':
-            res = await registerQuestionFunc(event);
+            res = await getQuestionFunc(event);
             break;
     }
 
@@ -183,10 +183,19 @@ const callbackFunc = async (event) => {
     return response;
 };
 
-const registerQuestionFunc = (event) => {
+const registerQuestionFunc = async (event) => {
     // const question = event.body.question;
 
 
+
+    const response = {
+        statusCode: 200,
+        body: JSON.stringify('success')
+    };
+    return response;
+};
+
+const getQuestionFunc = async (event) => {
 
     const response = {
         statusCode: 200,
