@@ -20,6 +20,9 @@ module.exports.hello = async (event) => {
         case '/callback':
             res = await callbackFunc(event);
             break;
+        case '/isRegularDelivery':
+            res = await isRegularDeliveryFunc(event);
+            break;
         case '/registerQuestion':
             res = await registerQuestionFunc(event);
             break;
@@ -199,53 +202,13 @@ const callbackFunc = async (event) => {
 
     let accessToken;
     if (type !== 'logIn') {
-        for (const property in cookie) {
-            if (cookie.hasOwnProperty(property)) {
-                if ((cookie[property]).indexOf('accessToken') != -1) {
-                    accessToken = cookie[property].slice(12);
-                }
-            }
-        }
-
         let id;
         if (type === 'postQuestion') {
             id = params.questionerUserId;
         } else if (type === 'postAnswer') {
             id = params.answererUserId;
         }
-
-        const param = {
-            TableName: 'peaceBoxUserTable',
-            KeyConditionExpression: '#k = :val',
-            ExpressionAttributeValues: {
-                ':val': id
-            },
-            ExpressionAttributeNames: {
-                '#k': 'userId'
-            }
-        };
-        const userData = await new Promise((resolve, reject) => {
-            dynamoDocument.query(param, (err, data) => {
-                if (err) {
-                    reject(err);
-                    const response = {
-                        statusCode: 500,
-                        body: ''
-                    };
-                    return response;
-                } else {
-                    resolve(data);
-                }
-            });
-        });
-        const registeredAccessToken = userData.Items[0].accessToken;
-        if (registeredAccessToken !== accessToken) {
-            const response = {
-                statusCode: 401,
-                body: JSON.stringify('Authorization Error!!')
-            };
-            return response;
-        }
+        await isLoggedIn(event, id);
     }
 
     if (oauthToken !== cookieOauthToken) {
@@ -461,12 +424,14 @@ const callbackFunc = async (event) => {
                 userId: userId
             },
             ExpressionAttributeNames: {
-                '#a': 'accessToken'
+                '#a': 'accessToken',
+                '#t': 'accessTokenTTL'
             },
             ExpressionAttributeValues: {
-                ':accessToken': accessToken
+                ':accessToken': accessToken,
+                ':accessTokenTTL': dt.setMinutes(dt.getMinutes() + 1440).getTime()
             },
-            UpdateExpression: 'SET #a = :accessToken'
+            UpdateExpression: 'SET #a = :accessToken, #t = :accessTokenTTL'
         };
         await new Promise((resolve, reject) => {
             dynamoDocument.update(param, (err, data) => {
@@ -491,15 +456,114 @@ const callbackFunc = async (event) => {
 
     const response = {
         statusCode: 200,
+        headers: {
+            'Set-Cookie': `accessToken=${accessToken}; HttpOnly; Secure; max-age=86400`
+        },
         body: JSON.stringify('Hello from Lambda!')
     };
     return response;
 };
 
+const isRegularDeliveryFunc = async (event) => {
+    const data = JSON.parse(event.body).data;
+    const isRegularDelivery = data.isRegularDelivery;
+    const userId = data.userId;
+
+    const isLoggedIn = isLoggedIn(event, userId);
+    if (isLoggedIn === 'authorizationError') {
+        const response = {
+            statusCode: 401,
+            body: JSON.stringify('Authorization Error!!')
+        };
+        return response;
+    } else if (isLoggedIn === 'expired') {
+        const response = authorizeFunc();
+        return response;
+    }
+
+    const param = {
+        TableName: 'peaceBoxUserTable',
+        Key: { // 更新したい項目をプライマリキー(及びソートキー)によって１つ指定
+            userId: userId
+        },
+        ExpressionAttributeNames: {
+            '#r': 'isRegularDelivery',
+        },
+        ExpressionAttributeValues: {
+            ':isRegularDelivery': isRegularDelivery
+        },
+        UpdateExpression: 'SET #r = :isRegularDelivery'
+    };
+    await new Promise((resolve, reject) => {
+        dynamoDocument.update(param, (err, data) => {
+            if (err) {
+                reject(err);
+                const response = {
+                    statusCode: 500,
+                    body: ''
+                };
+                return response;
+            } else {
+                resolve(data);
+            }
+        });
+    });
+    const response = {
+        statusCode: 200,
+        body: JSON.stringify('success')
+    };
+    return response;
+};
+
+const isLoggedIn = async (event, userId) => {
+    const cookie = event.headers.cookie.split('; ');
+    for (const property in cookie) {
+        if (cookie.hasOwnProperty(property)) {
+            if ((cookie[property]).indexOf('accessToken') != -1) {
+                accessToken = cookie[property].slice(12);
+            }
+        }
+    }
+
+    const param = {
+        TableName: 'peaceBoxUserTable',
+        KeyConditionExpression: '#k = :val',
+        ExpressionAttributeValues: {
+            ':val': userId
+        },
+        ExpressionAttributeNames: {
+            '#k': 'userId'
+        }
+    };
+    const userData = await new Promise((resolve, reject) => {
+        dynamoDocument.query(param, (err, data) => {
+            if (err) {
+                reject(err);
+                const response = {
+                    statusCode: 500,
+                    body: ''
+                };
+                return response;
+            } else {
+                resolve(data);
+            }
+        });
+    });
+    const registeredAccessToken = userData.Items[0].accessToken;
+    const accessTokenTTL = userData.Items[0].accessTokenTTL;
+    const date = new Date();
+    const timestamp = date.getTime();
+    if (registeredAccessToken !== accessToken) {
+        return 'authorizationError';
+    }
+    if (accessTokenTTL < timestamp) {
+        return 'expired';
+    }
+    return 'loggedIn';
+};
+
 const registerQuestionFunc = async (event) => {
     // const question = event.body.question;
-
-
 
     const response = {
         statusCode: 200,
