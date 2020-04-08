@@ -1,5 +1,5 @@
 // const oauthSignature = require('oauth-signature');
-const uuidv4 = require('uuid/v4');
+// const uuidv4 = require('uuid/v4');
 const axios = require('axios');
 const OAuth = require('oauth-1.0a');
 const crypto = require('crypto');
@@ -89,8 +89,14 @@ const callbackFunc = async (event) => {
     const oauthToken = params.oauth_token;
     const oauthVerifier = params.oauth_verifier;
 
-    const cookie = event.headers.cookie;
-    const cookieOauthToken = cookie.slice(12);
+    const cookie = event.headers.cookie.split('; ');
+
+    let cookieOauthToken;
+    for (const property in cookie) {
+        if ((cookie[property]).indexOf('oauth_token') != -1) {
+            cookieOauthToken = cookie[property].slice(12);
+        }
+    }
 
     if (oauthToken !== cookieOauthToken) {
         console.error(`oauthToken: ${oauthToken}, cookieOauthToken: ${cookieOauthToken}`);
@@ -145,7 +151,12 @@ const callbackFunc = async (event) => {
     const userOauthTokenEncrypted = crypto.publicEncrypt(publicKey, Buffer.from(userOauthToken)).toString('base64');
     const oauthTokenSecretEncrypted = crypto.publicEncrypt(publicKey, Buffer.from(oauthTokenSecret)).toString('base64');
 
-    const accessToken = uuidv4().toString('base64');
+    let accessToken;
+    try {
+        accessToken = crypto.randomBytes(256).toString('base64');
+    } catch (ex) {
+        console.log(`tokenErr: ${ex}`);
+    }
 
     const param = {
         TableName: 'peaceBoxUserTable',
