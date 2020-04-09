@@ -1,9 +1,8 @@
 <template>
     <div style="margin-top: 100px;">
-        <v-row v-if="loggedIn" align="center" justify="center">
-            <h1>Hello</h1>
-        </v-row>
-
+        <div v-if="loggedIn">
+            <inbox />
+        </div>
         <div v-else>
             <v-row align="center" justify="center">
                 <p>
@@ -24,6 +23,7 @@
 </template>
 
 <script>
+import inbox from '../components/inbox';
 export default {
     data: () => {
         return { loggedIn: false };
@@ -42,6 +42,9 @@ export default {
         }
     },
     methods: {},
+    components: {
+        inbox,
+    },
 };
 </script>
 
