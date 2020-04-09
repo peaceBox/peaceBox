@@ -1,30 +1,36 @@
 <template>
-  <v-app id="inspire">
-    <navigator v-model="drawer" />
-    <v-app-bar app color="#0D90BA" dark>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-toolbar-title>peaceBox</v-toolbar-title>
-    </v-app-bar>
+    <v-app id="inspire">
+        <v-app-bar app color="#0D90BA" dark>
+            <v-btn icon href="/">
+                <v-icon>mdi-home</v-icon>
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-toolbar-title href="/">
+                <span class="head_title">peaceBox</span>
+            </v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-btn icon href="inbox">
+                <v-icon>mdi-inbox</v-icon>
+            </v-btn>
+        </v-app-bar>
 
-     <main class="mainContainer">
-        <v-container class="px-4 py-8">
-          <nuxt />
-        </v-container>
-      </main>
-    <v-footer color="#0D90BA" app>
-      <span class="white--text">&copy; 2019</span>
-    </v-footer>
-  </v-app>
+        <main class="mainContainer">
+            <v-container class="px-4 py-8">
+                <nuxt />
+            </v-container>
+        </main>
+    </v-app>
 </template>
 
 <script>
-import navigator from "../components/navigator"
 export default {
     data: () => ({
         drawer: false,
     }),
-    components:{
-      navigator
-    }
-}
+};
 </script>
+<style>
+.head_title {
+    font-family: 'Acme', sans-serif;
+}
+</style>
