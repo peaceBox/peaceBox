@@ -27,11 +27,18 @@
             <v-card-text v-if="answer != ''" class="headline">
                 {{ answer }}
             </v-card-text>
+            <v-card-actions v-else>
+                <answer-input />
+            </v-card-actions>
         </v-card>
     </div>
 </template>
 <script>
+import answerInput from '../components/answerInput';
 export default {
     props: ['question', 'answer', 'questioner'],
+    components: {
+        answerInput,
+    },
 };
 </script>
