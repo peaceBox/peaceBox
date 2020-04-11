@@ -27,6 +27,6 @@
 </template>
 <script>
 export default {
-    props: ['screenName', 'question', 'answer', 'questioner'],
+    props: ['question', 'answer', 'questioner'],
 };
 </script>
