@@ -30,17 +30,6 @@ exports.callback = async (event) => {
     }
   }
 
-  for (const property in cookie) {
-    if (cookie.hasOwnProperty(property)) {
-      if ((cookie[property]).indexOf('oauth_token') != -1) {
-        cookieOauthToken = cookie[property].slice(12);
-      }
-      if ((cookie[property]).indexOf('type') != -1) {
-        type = cookie[property].slice(5);
-      }
-    }
-  }
-
   /* if (type !== 'logIn') {
       let id;
       if (type === 'postQuestion') {
@@ -152,151 +141,19 @@ exports.callback = async (event) => {
     });
   });
 
-  let peaceBoxTemporaryTableValue;
-  if (type !== 'logIn') {
-    const peaceBoxTemporaryTableParam = {
-      TableName: 'peaceBoxTemporaryTable',
-      KeyConditionExpression: '#k = :val',
-      ExpressionAttributeValues: {
-        ':val': oauthToken
-      },
-      ExpressionAttributeNames: {
-        '#k': 'oauthToken'
-      }
-    };
-    const peaceBoxTemporaryTableValues = await new Promise((resolve, reject) => {
-      dynamoDocument.query(peaceBoxTemporaryTableParam, (err, data) => {
-        if (err) {
-          reject(err);
-          const response = {
-            statusCode: 500,
-            body: ''
-          };
-          return response;
-        } else {
-          resolve(data);
-        }
-      });
-    });
-    peaceBoxTemporaryTableValue = peaceBoxTemporaryTableValues.Items[0];
+  switch (type) {
+    case 'logIn':
+      await logIn(event, userOauthToken, oauthTokenSecret);
+      break;
+    case 'postQuestion':
+      await postQuestion(event, oauthToken, dt);
+      break;
+    case 'postAnswer':
+      await postAnswer(event, oauthToken);
+      break;
+    default:
+      break;
   }
-
-  if (type === 'postQuestion') {
-    const peaceBoxQuestionTableParam = {
-      TableName: 'peaceBoxQuestionTable',
-      Item: {
-        questionId: uuidv4().split('-').join(''),
-        questionerUserId: peaceBoxTemporaryTableValue.questionerUserId,
-        question: peaceBoxTemporaryTableValue.question,
-        registeredDate: dt.getTime()
-      }
-    };
-    await new Promise((resolve, reject) => {
-      dynamoDocument.put(peaceBoxQuestionTableParam, (err, data) => {
-        if (err) {
-          reject(err);
-          const response = {
-            statusCode: 500,
-            body: ''
-          };
-          return response;
-        } else {
-          resolve(data);
-        }
-      });
-    });
-  } else if (type === 'postAnswer') {
-    const peaceBoxQuestionTableParam = {
-      TableName: 'peaceBoxQuestionTable',
-      Key: { // 更新したい項目をプライマリキー(及びソートキー)によって１つ指定
-        questionId: peaceBoxTemporaryTableValue.questionId
-      },
-      ExpressionAttributeNames: {
-        '#a': 'answererUserId',
-        '#b': 'answer',
-        '#c': 'answeredDate'
-      },
-      ExpressionAttributeValues: {
-        ':answererUserId': peaceBoxTemporaryTableValue.answererUserId,
-        ':answer': peaceBoxTemporaryTableValue.answer,
-        ':answeredDate': peaceBoxTemporaryTableValue.answeredDate
-      },
-      UpdateExpression: 'SET #a = :answererUserId, #b = :answer, #c = :answeredDate'
-    };
-    await new Promise((resolve, reject) => {
-      dynamoDocument.update(peaceBoxQuestionTableParam, (err, data) => {
-        if (err) {
-          reject(err);
-          const response = {
-            statusCode: 500,
-            body: ''
-          };
-          return response;
-        } else {
-          resolve(data);
-        }
-      });
-    });
-  }
-
-  if (type !== 'logIn') {
-    const param = {
-      TableName: 'peaceBoxTemporaryTable',
-      Key: {
-        oauthToken: oauthToken
-      }
-    };
-    await new Promise((resolve, reject) => {
-      dynamoDocument.delete(param, (err, data) => {
-        if (err) {
-          reject(err);
-          const response = {
-            statusCode: 500,
-            body: ''
-          };
-          return response;
-        } else {
-          resolve(data);
-        }
-      });
-    });
-  }
-  /* else {
-          const param = {
-              TableName: 'peaceBoxUserTable',
-              Key: { // 更新したい項目をプライマリキー(及びソートキー)によって１つ指定
-                  userId: userId
-              },
-              ExpressionAttributeNames: {
-                  '#a': 'accessToken',
-                  '#t': 'accessTokenTTL'
-              },
-              ExpressionAttributeValues: {
-                  ':accessToken': accessToken,
-                  ':accessTokenTTL': dt.setMinutes(dt.getMinutes() + 1440).getTime()
-              },
-              UpdateExpression: 'SET #a = :accessToken, #t = :accessTokenTTL'
-          };
-          await new Promise((resolve, reject) => {
-              dynamoDocument.update(param, (err, data) => {
-                  if (err) {
-                      reject(err);
-                      const response = {
-                          statusCode: 500,
-                          body: ''
-                      };
-                      return response;
-                  } else {
-                      resolve(data);
-                  }
-              });
-          });
-      }*/
-
-  /*
-  const privateKey = process.env.privateKey.split('<br>').join('\n');
-  const decrypted = crypto.privateDecrypt(privateKey, Buffer.from(userOauthTokenEncrypted, 'base64')).toString('utf8');
-  console.log(decrypted);*/
 
   const response = {
     statusCode: 302,
@@ -319,3 +176,199 @@ exports.callback = async (event) => {
   };
   return response;
 };
+
+const logIn = async (event, userOauthToken, oauthTokenSecret) => {
+  // eslint-disable-next-line new-cap
+  const oauth = OAuth({
+    consumer: {
+      key: process.env.consumer_key,
+      secret: process.env.consumer_secret
+    },
+    signature_method: 'HMAC-SHA1',
+    hash_function(baseString, key) {
+      return crypto.createHmac('sha1', key).update(baseString).digest('base64');
+    }
+  });
+
+  const requestData = {
+    url: 'https://api.twitter.com/1.1/account/settings.json',
+    method: 'GET'
+  };
+
+  const token = {
+    key: userOauthToken,
+    secret: oauthTokenSecret,
+  };
+
+  const authData = oauth.authorize(requestData, token);
+  requestData.headers = oauth.toHeader(authData);
+
+  const tokenResponse = await axios(requestData).catch((e) => {
+    throw new Error(JSON.stringify({
+      status: e.response.data
+    }));
+  });
+  console.log(tokenResponse);
+};
+
+const postQuestion = async (event, oauthToken, dt) => {
+  const peaceBoxTemporaryTableParam = {
+    TableName: 'peaceBoxTemporaryTable',
+    KeyConditionExpression: '#k = :val',
+    ExpressionAttributeValues: {
+      ':val': oauthToken
+    },
+    ExpressionAttributeNames: {
+      '#k': 'oauthToken'
+    }
+  };
+  const peaceBoxTemporaryTableValues = await new Promise((resolve, reject) => {
+    dynamoDocument.query(peaceBoxTemporaryTableParam, (err, data) => {
+      if (err) {
+        reject(err);
+        const response = {
+          statusCode: 500,
+          body: ''
+        };
+        return response;
+      } else {
+        resolve(data);
+      }
+    });
+  });
+  const peaceBoxTemporaryTableValue = peaceBoxTemporaryTableValues.Items[0];
+
+  const peaceBoxQuestionTableParam = {
+    TableName: 'peaceBoxQuestionTable',
+    Item: {
+      questionId: uuidv4().split('-').join(''),
+      questionerUserId: peaceBoxTemporaryTableValue.questionerUserId,
+      question: peaceBoxTemporaryTableValue.question,
+      registeredDate: dt.getTime()
+    }
+  };
+  await new Promise((resolve, reject) => {
+    dynamoDocument.put(peaceBoxQuestionTableParam, (err, data) => {
+      if (err) {
+        reject(err);
+        const response = {
+          statusCode: 500,
+          body: ''
+        };
+        return response;
+      } else {
+        resolve(data);
+      }
+    });
+  });
+
+  const param = {
+    TableName: 'peaceBoxTemporaryTable',
+    Key: {
+      oauthToken: oauthToken
+    }
+  };
+  await new Promise((resolve, reject) => {
+    dynamoDocument.delete(param, (err, data) => {
+      if (err) {
+        reject(err);
+        const response = {
+          statusCode: 500,
+          body: ''
+        };
+        return response;
+      } else {
+        resolve(data);
+      }
+    });
+  });
+
+};
+
+const postAnswer = async (ebent, oauthToken) => {
+  const peaceBoxTemporaryTableParam = {
+    TableName: 'peaceBoxTemporaryTable',
+    KeyConditionExpression: '#k = :val',
+    ExpressionAttributeValues: {
+      ':val': oauthToken
+    },
+    ExpressionAttributeNames: {
+      '#k': 'oauthToken'
+    }
+  };
+  const peaceBoxTemporaryTableValues = await new Promise((resolve, reject) => {
+    dynamoDocument.query(peaceBoxTemporaryTableParam, (err, data) => {
+      if (err) {
+        reject(err);
+        const response = {
+          statusCode: 500,
+          body: ''
+        };
+        return response;
+      } else {
+        resolve(data);
+      }
+    });
+  });
+  const peaceBoxTemporaryTableValue = peaceBoxTemporaryTableValues.Items[0];
+
+  const peaceBoxQuestionTableParam = {
+    TableName: 'peaceBoxQuestionTable',
+    Key: { // 更新したい項目をプライマリキー(及びソートキー)によって１つ指定
+      questionId: peaceBoxTemporaryTableValue.questionId
+    },
+    ExpressionAttributeNames: {
+      '#a': 'answererUserId',
+      '#b': 'answer',
+      '#c': 'answeredDate'
+    },
+    ExpressionAttributeValues: {
+      ':answererUserId': peaceBoxTemporaryTableValue.answererUserId,
+      ':answer': peaceBoxTemporaryTableValue.answer,
+      ':answeredDate': peaceBoxTemporaryTableValue.answeredDate
+    },
+    UpdateExpression: 'SET #a = :answererUserId, #b = :answer, #c = :answeredDate'
+  };
+  await new Promise((resolve, reject) => {
+    dynamoDocument.update(peaceBoxQuestionTableParam, (err, data) => {
+      if (err) {
+        reject(err);
+        const response = {
+          statusCode: 500,
+          body: ''
+        };
+        return response;
+      } else {
+        resolve(data);
+      }
+    });
+  });
+
+  const param = {
+    TableName: 'peaceBoxTemporaryTable',
+    Key: {
+      oauthToken: oauthToken
+    }
+  };
+  await new Promise((resolve, reject) => {
+    dynamoDocument.delete(param, (err, data) => {
+      if (err) {
+        reject(err);
+        const response = {
+          statusCode: 500,
+          body: ''
+        };
+        return response;
+      } else {
+        resolve(data);
+      }
+    });
+  });
+
+};
+
+
+/*
+const privateKey = process.env.privateKey.split('<br>').join('\n');
+const decrypted = crypto.privateDecrypt(privateKey, Buffer.from(userOauthTokenEncrypted, 'base64')).toString('utf8');
+console.log(decrypted);*/
