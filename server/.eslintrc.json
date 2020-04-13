@@ -17,5 +17,6 @@
     },
     "rules": {
         "require-jsdoc": "off"
+        //"no-undef": "error"
     }
 }
