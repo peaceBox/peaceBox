@@ -4,6 +4,27 @@ AWS.config.update({
 });
 
 exports.registerImage = async (event) => {
+  const others = require('./others');
+
+  const isLoggedIn = others.isLoggedIn(event, userId);
+  if (isLoggedIn === 'authorizationError') {
+    const response = {
+      statusCode: 401,
+      body: JSON.stringify('Authorization Error!!')
+    };
+    return response;
+  } else if (isLoggedIn === 'expired') {
+    const response = {
+      statusCode: 302,
+      headers: {
+        'Location': 'https://api.peacebox.shinbunbun.info/authorize?type=logIn',
+        'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info'
+      },
+      body: ''
+    };
+    return response;
+  }
+
   const data = JSON.parse(event.body).data;
   console.log(data);
   const questionId = data.questionId;

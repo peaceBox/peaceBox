@@ -1,4 +1,5 @@
 exports.registerQuestion = async (event) => {
+  const others = require('./others');
 
   const params = event.queryStringParameters;
   const questionerUserId = params.questionerUserId;
