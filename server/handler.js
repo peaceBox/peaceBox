@@ -466,6 +466,9 @@ const callbackFunc = async (event) => {
             // 'Set-Cookie': `accessToken=${accessToken}; HttpOnly; max-age=86400`
             'Set-Cookie': `accessToken=${accessToken}; HttpOnly; Secure; max-age=86400`
         },
+        multiValueHeaders: {
+            'Set-Cookie': ['oauth_token=0; max-age=0', 'type=0; max-age=0']
+        },
         body: ''
     };
     return response;
