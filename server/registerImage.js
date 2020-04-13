@@ -28,7 +28,9 @@ exports.registerImage = async (event) => {
 
   const response = {
     statusCode: 200,
-    body: ''
+    body: JSON.stringify({
+      imageUrl: `https://peacebox-images.s3-ap-northeast-1.amazonaws.com/${questionId}.jpeg`
+    })
   };
   return response;
 };
