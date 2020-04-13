@@ -18,22 +18,24 @@ module.exports.hello = async (event) => {
         case '/callback':
             res = await callbackFunc.callback(event);
             break;
-        case '/isRegularDelivery':
+        case '/iseregulardelivery':
             res = await isRegularDeliveryFunc.isRegularDelivery(event);
             break;
-        case '/registerQuestion':
+        case '/registerquestion':
             res = await registerQuestionFunc.registerQuestion(event);
             break;
-        case '/getAllQuestion':
+        case '/getallquestion':
             res = await getAllQuestionFunc.getAllQuestion(event);
             break;
-        case '/getQuestion':
+        case '/getquestion':
             res = await getQuestionFunc.getQuestion(event);
             break;
-        case '/registerImage':
+        case '/registerimage':
             res = await registerImageFunc.registerImage(event);
             break;
     }
+
+    console.log(res);
 
     return res;
 };
