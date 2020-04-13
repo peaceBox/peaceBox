@@ -15,7 +15,8 @@ exports.getQuestion = async (event) => {
     const response = {
       statusCode: 302,
       headers: {
-        'Location': 'https://api.peacebox.shinbunbun.info/authorize?type=logIn'
+        'Location': 'https://api.peacebox.shinbunbun.info/authorize?type=logIn',
+        'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info'
       },
       body: ''
     };
@@ -55,6 +56,9 @@ exports.getQuestion = async (event) => {
 
   const response = {
     statusCode: 200,
+    headers: {
+      'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info'
+    },
     multiValueHeaders: {
       'Set-Cookie': [
         `answer=${answer}; Secure; max-age=86400; domain=peacebox.shinbunbun.info`,

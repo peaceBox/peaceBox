@@ -15,7 +15,8 @@ exports.getAllQuestion = async (event) => {
     const response = {
       statusCode: 302,
       headers: {
-        'Location': 'https://api.peacebox.shinbunbun.info/authorize?type=logIn'
+        'Location': 'https://api.peacebox.shinbunbun.info/authorize?type=logIn',
+        'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info'
       },
       body: ''
     };
@@ -48,6 +49,9 @@ exports.getAllQuestion = async (event) => {
 
   const response = {
     statusCode: 200,
+    headers: {
+      'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info'
+    },
     body: JSON.stringify('success')
   };
   return response;
