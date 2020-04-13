@@ -5,9 +5,10 @@ AWS.config.update({
 
 exports.registerImage = async (event) => {
   const data = JSON.parse(event.body).data;
+  console.log(data);
   const questionId = data.questionId;
   const image = data.image.replace(/^data:\w+\/\w+;base64,/, '');
-  const decodedImage = new Buffer(image, 'base64');
+  const decodedImage = Buffer.from(image, 'base64');
 
   const params = {
     Body: decodedImage,
@@ -27,7 +28,7 @@ exports.registerImage = async (event) => {
 
   const response = {
     statusCode: 200,
-    body: JSON.stringify('success')
+    body: ''
   };
   return response;
 };
