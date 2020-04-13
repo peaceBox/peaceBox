@@ -141,43 +141,25 @@ exports.callback = async (event) => {
     });
   });
 
+  let response;
   switch (type) {
     case 'logIn':
-      await logIn(event, userOauthToken, oauthTokenSecret);
+      response = await logIn(event, userOauthToken, oauthTokenSecret, userId, accessToken, screenName);
       break;
     case 'postQuestion':
-      await postQuestion(event, oauthToken, dt);
+      response = await postQuestion(event, oauthToken, dt);
       break;
     case 'postAnswer':
-      await postAnswer(event, oauthToken);
+      response = await postAnswer(event, oauthToken);
       break;
     default:
       break;
   }
 
-  const response = {
-    statusCode: 302,
-    headers: {
-      'Location': `https://peacebox.shinbunbun.info?userId=${userId}&screenName=${screenName}`,
-      // 'Location': 'http://takanawa2019.shinbunbun.info',
-      // 'Set-Cookie': `accessToken=${accessToken}; HttpOnly; max-age=86400`
-      'Set-Cookie': `accessToken=${accessToken}; HttpOnly; Secure; max-age=86400; domain=peacebox.shinbunbun.info`
-    },
-    multiValueHeaders: {
-      'Set-Cookie': [
-        'oauth_token=0; max-age=0',
-        'type=0; max-age=0',
-        `accessToken=${accessToken}; HttpOnly; Secure; max-age=86400; domain=peacebox.shinbunbun.info`,
-        `userId=${userId}; Secure; max-age=86400; domain=peacebox.shinbunbun.info`,
-        `screenName=${screenName}; Secure; max-age=86400; domain=peacebox.shinbunbun.info`
-      ]
-    },
-    body: ''
-  };
   return response;
 };
 
-const logIn = async (event, userOauthToken, oauthTokenSecret) => {
+const logIn = async (event, userOauthToken, oauthTokenSecret, userId, accessToken, screenName) => {
   // eslint-disable-next-line new-cap
   const oauth = OAuth({
     consumer: {
@@ -191,8 +173,8 @@ const logIn = async (event, userOauthToken, oauthTokenSecret) => {
   });
 
   const requestData = {
-    url: 'https://api.twitter.com/1.1/account/settings.json',
-    method: 'GET'
+    url: `https://api.twitter.com/1.1/users/show.json?user_id=${userId}`,
+    method: 'GET',
   };
 
   const token = {
@@ -202,13 +184,37 @@ const logIn = async (event, userOauthToken, oauthTokenSecret) => {
 
   const authData = oauth.authorize(requestData, token);
   requestData.headers = oauth.toHeader(authData);
+  delete requestData.data;
 
   const tokenResponse = await axios(requestData).catch((e) => {
-    throw new Error(JSON.stringify({
-      status: e.response.data
-    }));
+    throw new Error(e);
   });
-  console.log(tokenResponse);
+
+  const name = tokenResponse.data.name;
+  const profileImageUrl = tokenResponse.data.profile_image_url;
+
+  const response = {
+    statusCode: 302,
+    headers: {
+      'Location': 'https://peacebox.shinbunbun.info',
+      // 'Location': 'http://takanawa2019.shinbunbun.info',
+      // 'Set-Cookie': `accessToken=${accessToken}; HttpOnly; max-age=86400`
+      'Set-Cookie': `accessToken=${accessToken}; HttpOnly; Secure; max-age=86400; domain=peacebox.shinbunbun.info`
+    },
+    multiValueHeaders: {
+      'Set-Cookie': [
+        'oauth_token=0; max-age=0',
+        'type=0; max-age=0',
+        `accessToken=${accessToken}; HttpOnly; Secure; max-age=86400; domain=peacebox.shinbunbun.info`,
+        `userId=${userId}; Secure; max-age=86400; domain=peacebox.shinbunbun.info`,
+        `screenName=${screenName}; Secure; max-age=86400; domain=peacebox.shinbunbun.info`,
+        `name=${name}; Secure; max-age=86400; domain=peacebox.shinbunbun.info`,
+        `profileImageUrl=${profileImageUrl}; Secure; max-age=86400; domain=peacebox.shinbunbun.info`
+      ]
+    },
+    body: ''
+  };
+  return response;
 };
 
 const postQuestion = async (event, oauthToken, dt) => {
