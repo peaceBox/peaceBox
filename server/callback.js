@@ -200,7 +200,7 @@ const logIn = async (event, userOauthToken, oauthTokenSecret, userId, accessToke
       'Location': 'https://peacebox.shinbunbun.info',
       // 'Location': 'http://takanawa2019.shinbunbun.info',
       // 'Set-Cookie': `accessToken=${accessToken}; HttpOnly; max-age=86400`
-      'Set-Cookie': `accessToken=${accessToken}; HttpOnly; Secure; max-age=86400; domain=peacebox.shinbunbun.info`
+      // 'Set-Cookie': `accessToken=${accessToken}; HttpOnly; Secure; max-age=86400; domain=peacebox.shinbunbun.info`
     },
     multiValueHeaders: {
       'Set-Cookie': [
