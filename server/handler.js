@@ -166,6 +166,7 @@ const authorizeFunc = async (event) => {
 };
 
 const callbackFunc = async (event) => {
+    const dt = new Date();
     console.log(event);
 
     // パラメータを取得
@@ -200,8 +201,7 @@ const callbackFunc = async (event) => {
         }
     }
 
-    let accessToken;
-    if (type !== 'logIn') {
+    /* if (type !== 'logIn') {
         let id;
         if (type === 'postQuestion') {
             id = params.questionerUserId;
@@ -209,7 +209,7 @@ const callbackFunc = async (event) => {
             id = params.answererUserId;
         }
         await isLoggedIn(event, id);
-    }
+    }*/
 
     if (oauthToken !== cookieOauthToken) {
         console.error(`oauthToken: ${oauthToken}, cookieOauthToken: ${cookieOauthToken}`);
@@ -264,6 +264,18 @@ const callbackFunc = async (event) => {
     const userOauthTokenEncrypted = crypto.publicEncrypt(publicKey, Buffer.from(userOauthToken)).toString('base64');
     const oauthTokenSecretEncrypted = crypto.publicEncrypt(publicKey, Buffer.from(oauthTokenSecret)).toString('base64');
 
+    let accessToken;
+    try {
+        accessToken = crypto.randomBytes(256).toString('base64');
+    } catch (ex) {
+        console.error(`tokenErr: ${ex}`);
+        const response = {
+            statusCode: 500,
+            body: ''
+        };
+        return response;
+    }
+
     const param = {
         TableName: 'peaceBoxUserTable',
         Key: { // 更新したい項目をプライマリキー(及びソートキー)によって１つ指定
@@ -272,15 +284,18 @@ const callbackFunc = async (event) => {
         ExpressionAttributeNames: {
             '#u': 'userOauthTokenEncrypted',
             '#o': 'oauthTokenSecretEncrypted',
-            '#s': 'screenName'
+            '#s': 'screenName',
+            '#a': 'accessToken',
+            '#t': 'accessTokenTTL'
         },
         ExpressionAttributeValues: {
             ':userOauthTokenEncrypted': userOauthTokenEncrypted,
             ':oauthTokenSecretEncrypted': oauthTokenSecretEncrypted,
             ':screenName': screenName,
             ':accessToken': accessToken,
+            ':accessTokenTTL': dt.setMinutes(dt.getMinutes() + 1440) // .getTime()
         },
-        UpdateExpression: 'SET #u = :userOauthTokenEncrypted, #o = :oauthTokenSecretEncrypted, #s = :screenName'
+        UpdateExpression: 'SET #u = :userOauthTokenEncrypted, #o = :oauthTokenSecretEncrypted, #s = :screenName, #a = :accessToken, #t = :accessTokenTTL'
     };
     await new Promise((resolve, reject) => {
         dynamoDocument.update(param, (err, data) => {
@@ -405,49 +420,38 @@ const callbackFunc = async (event) => {
                 }
             });
         });
-    } else {
-        let accessToken;
-        try {
-            accessToken = crypto.randomBytes(256).toString('base64');
-        } catch (ex) {
-            console.error(`tokenErr: ${ex}`);
-            const response = {
-                statusCode: 500,
-                body: ''
-            };
-            return response;
-        }
-
-        const param = {
-            TableName: 'peaceBoxUserTable',
-            Key: { // 更新したい項目をプライマリキー(及びソートキー)によって１つ指定
-                userId: userId
-            },
-            ExpressionAttributeNames: {
-                '#a': 'accessToken',
-                '#t': 'accessTokenTTL'
-            },
-            ExpressionAttributeValues: {
-                ':accessToken': accessToken,
-                ':accessTokenTTL': dt.setMinutes(dt.getMinutes() + 1440).getTime()
-            },
-            UpdateExpression: 'SET #a = :accessToken, #t = :accessTokenTTL'
-        };
-        await new Promise((resolve, reject) => {
-            dynamoDocument.update(param, (err, data) => {
-                if (err) {
-                    reject(err);
-                    const response = {
-                        statusCode: 500,
-                        body: ''
-                    };
-                    return response;
-                } else {
-                    resolve(data);
-                }
-            });
-        });
     }
+    /* else {
+            const param = {
+                TableName: 'peaceBoxUserTable',
+                Key: { // 更新したい項目をプライマリキー(及びソートキー)によって１つ指定
+                    userId: userId
+                },
+                ExpressionAttributeNames: {
+                    '#a': 'accessToken',
+                    '#t': 'accessTokenTTL'
+                },
+                ExpressionAttributeValues: {
+                    ':accessToken': accessToken,
+                    ':accessTokenTTL': dt.setMinutes(dt.getMinutes() + 1440).getTime()
+                },
+                UpdateExpression: 'SET #a = :accessToken, #t = :accessTokenTTL'
+            };
+            await new Promise((resolve, reject) => {
+                dynamoDocument.update(param, (err, data) => {
+                    if (err) {
+                        reject(err);
+                        const response = {
+                            statusCode: 500,
+                            body: ''
+                        };
+                        return response;
+                    } else {
+                        resolve(data);
+                    }
+                });
+            });
+        }*/
 
     /*
     const privateKey = process.env.privateKey.split('<br>').join('\n');
@@ -455,11 +459,14 @@ const callbackFunc = async (event) => {
     console.log(decrypted);*/
 
     const response = {
-        statusCode: 200,
+        statusCode: 302,
         headers: {
+            'Location': `https://peacebox.shinbunbun.info?userId=${userId}&screenName=${screenName}`,
+            // 'Location': 'http://takanawa2019.shinbunbun.info',
+            // 'Set-Cookie': `accessToken=${accessToken}; HttpOnly; max-age=86400`
             'Set-Cookie': `accessToken=${accessToken}; HttpOnly; Secure; max-age=86400`
         },
-        body: JSON.stringify('Hello from Lambda!')
+        body: ''
     };
     return response;
 };
@@ -515,7 +522,7 @@ const isRegularDeliveryFunc = async (event) => {
     return response;
 };
 
-const isLoggedIn = async (event, userId) => {
+/* const isLoggedIn = async (event, userId) => {
     const cookie = event.headers.cookie.split('; ');
     for (const property in cookie) {
         if (cookie.hasOwnProperty(property)) {
@@ -560,7 +567,7 @@ const isLoggedIn = async (event, userId) => {
         return 'expired';
     }
     return 'loggedIn';
-};
+};*/
 
 const registerQuestionFunc = async (event) => {
     // const question = event.body.question;
