@@ -2,6 +2,9 @@ module.exports.hello = async (event) => {
     const authorizeFunc = require('./authorize');
     const callbackFunc = require('./callback');
     const isRegularDeliveryFunc = require('./isRegularDelivery');
+    const getAllQuestionFunc = require('./getAllQuestion');
+    const registerQuestionFunc = require('./registerQuestion');
+    const getQuestionFunc = require('./getQuestion');
     // パスを取得
     const path = event.path;
     // レスポンスを定義
@@ -18,63 +21,19 @@ module.exports.hello = async (event) => {
             res = await isRegularDeliveryFunc.isRegularDelivery(event);
             break;
         case '/registerQuestion':
-            res = await registerQuestionFunc(event);
+            res = await registerQuestionFunc.registerQuestion(event);
+            break;
+        case '/getAllQuestion':
+            res = await getAllQuestionFunc.getAllQuestion(event);
             break;
         case '/getQuestion':
-            res = await getQuestionFunc(event);
+            res = await getQuestionFunc.getQuestion(event);
             break;
     }
 
     return res;
 };
-
-/* const isLoggedIn = async (event, userId) => {
-    const cookie = event.headers.cookie.split('; ');
-    for (const property in cookie) {
-        if (cookie.hasOwnProperty(property)) {
-            if ((cookie[property]).indexOf('accessToken') != -1) {
-                accessToken = cookie[property].slice(12);
-            }
-        }
-    }
-
-    const param = {
-        TableName: 'peaceBoxUserTable',
-        KeyConditionExpression: '#k = :val',
-        ExpressionAttributeValues: {
-            ':val': userId
-        },
-        ExpressionAttributeNames: {
-            '#k': 'userId'
-        }
-    };
-    const userData = await new Promise((resolve, reject) => {
-        dynamoDocument.query(param, (err, data) => {
-            if (err) {
-                reject(err);
-                const response = {
-                    statusCode: 500,
-                    body: ''
-                };
-                return response;
-            } else {
-                resolve(data);
-            }
-        });
-    });
-    const registeredAccessToken = userData.Items[0].accessToken;
-    const accessTokenTTL = userData.Items[0].accessTokenTTL;
-    const date = new Date();
-    const timestamp = date.getTime();
-    if (registeredAccessToken !== accessToken) {
-        return 'authorizationError';
-    }
-    if (accessTokenTTL < timestamp) {
-        return 'expired';
-    }
-    return 'loggedIn';
-};*/
-
+/*
 const registerQuestionFunc = async (event) => {
     // const question = event.body.question;
 
@@ -92,4 +51,4 @@ const getQuestionFunc = async (event) => {
         body: JSON.stringify('success')
     };
     return response;
-};
+};*/

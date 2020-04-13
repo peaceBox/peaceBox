@@ -2,11 +2,12 @@ const AWS = require('aws-sdk');
 const dynamoDocument = new AWS.DynamoDB.DocumentClient();
 
 exports.isRegularDelivery = async (event) => {
+  const others = require('./others');
   const data = JSON.parse(event.body).data;
   const isRegularDelivery = data.isRegularDelivery;
   const userId = data.userId;
 
-  const isLoggedIn = isLoggedIn(event, userId);
+  const isLoggedIn = others.isLoggedIn(event, userId);
   if (isLoggedIn === 'authorizationError') {
     const response = {
       statusCode: 401,
@@ -14,7 +15,13 @@ exports.isRegularDelivery = async (event) => {
     };
     return response;
   } else if (isLoggedIn === 'expired') {
-    const response = authorizeFunc();
+    const response = {
+      statusCode: 302,
+      headers: {
+        'Location': 'https://api.peacebox.shinbunbun.info/authorize?type=logIn'
+      },
+      body: ''
+    };
     return response;
   }
 
@@ -46,8 +53,11 @@ exports.isRegularDelivery = async (event) => {
     });
   });
   const response = {
-    statusCode: 200,
-    body: JSON.stringify('success')
+    statusCode: 302,
+    headers: {
+      'Location': 'https://peacebox.shinbunbun.info'
+    },
+    body: ''
   };
   return response;
 };
