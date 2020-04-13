@@ -464,7 +464,7 @@ const callbackFunc = async (event) => {
             'Location': `https://peacebox.shinbunbun.info?userId=${userId}&screenName=${screenName}`,
             // 'Location': 'http://takanawa2019.shinbunbun.info',
             // 'Set-Cookie': `accessToken=${accessToken}; HttpOnly; max-age=86400`
-            'Set-Cookie': `accessToken=${accessToken}; HttpOnly; Secure; max-age=86400`
+            'Set-Cookie': `accessToken=${accessToken}; HttpOnly; Secure; max-age=86400; domain=peacebox.shinbunbun.info`
         },
         multiValueHeaders: {
             'Set-Cookie': ['oauth_token=0; max-age=0', 'type=0; max-age=0']
