@@ -191,7 +191,8 @@ const logIn = async (event, userOauthToken, oauthTokenSecret, userId, accessToke
   });
 
   const name = tokenResponse.data.name;
-  const profileImageUrl = tokenResponse.data.profile_image_url;
+  const profileImageUrl = tokenResponse.data.profile_image_url_https.replace(/_normal/g, '');
+  console.log(name);
 
   const response = {
     statusCode: 302,
@@ -208,7 +209,7 @@ const logIn = async (event, userOauthToken, oauthTokenSecret, userId, accessToke
         `accessToken=${accessToken}; HttpOnly; Secure; max-age=86400; domain=peacebox.shinbunbun.info`,
         `userId=${userId}; Secure; max-age=86400; domain=peacebox.shinbunbun.info`,
         `screenName=${screenName}; Secure; max-age=86400; domain=peacebox.shinbunbun.info`,
-        `name=${name}; Secure; max-age=86400; domain=peacebox.shinbunbun.info`,
+        `name=${encodeURI(name)}; Secure; max-age=86400; domain=peacebox.shinbunbun.info`,
         `profileImageUrl=${profileImageUrl}; Secure; max-age=86400; domain=peacebox.shinbunbun.info`
       ]
     },
