@@ -467,7 +467,13 @@ const callbackFunc = async (event) => {
             'Set-Cookie': `accessToken=${accessToken}; HttpOnly; Secure; max-age=86400; domain=peacebox.shinbunbun.info`
         },
         multiValueHeaders: {
-            'Set-Cookie': ['oauth_token=0; max-age=0', 'type=0; max-age=0']
+            'Set-Cookie': [
+                'oauth_token=0; max-age=0',
+                'type=0; max-age=0',
+                `accessToken=${accessToken}; HttpOnly; Secure; max-age=86400; domain=peacebox.shinbunbun.info`,
+                `userId=${userId}; Secure; max-age=86400; domain=peacebox.shinbunbun.info`,
+                `screenName=${screenName}; Secure; max-age=86400; domain=peacebox.shinbunbun.info`
+            ]
         },
         body: ''
     };
