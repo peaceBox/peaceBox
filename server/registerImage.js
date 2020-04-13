@@ -28,6 +28,11 @@ exports.registerImage = async (event) => {
 
   const response = {
     statusCode: 200,
+    headers: {
+      'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info'
+      // 'Access-Control-Allow-Credentials': true,
+      // 'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept'
+    },
     body: JSON.stringify({
       imageUrl: `https://peacebox-images.s3-ap-northeast-1.amazonaws.com/${questionId}.jpeg`
     })

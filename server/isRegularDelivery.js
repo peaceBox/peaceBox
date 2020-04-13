@@ -18,7 +18,8 @@ exports.isRegularDelivery = async (event) => {
     const response = {
       statusCode: 302,
       headers: {
-        'Location': 'https://api.peacebox.shinbunbun.info/authorize?type=logIn'
+        'Location': 'https://api.peacebox.shinbunbun.info/authorize?type=logIn',
+        'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info'
       },
       body: ''
     };
@@ -55,7 +56,8 @@ exports.isRegularDelivery = async (event) => {
   const response = {
     statusCode: 302,
     headers: {
-      'Location': 'https://peacebox.shinbunbun.info'
+      'Location': 'https://peacebox.shinbunbun.info',
+      'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info'
     },
     body: ''
   };
