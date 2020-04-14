@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <v-container lg-6>
         <questionCard
             v-for="(item, index) in questions"
             :key="index"
@@ -7,7 +7,7 @@
             :answer="item.answer"
             :questioner="item.questioner"
         />
-    </div>
+    </v-container>
 </template>
 <script>
 import questionCard from '../components/questionCard';
