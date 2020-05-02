@@ -1,4 +1,4 @@
-// const uuidv4 = require('uuid/v4');
+const uuidv4 = require('uuid/v4');
 const axios = require('axios');
 const OAuth = require('oauth-1.0a');
 const crypto = require('crypto');
@@ -6,6 +6,8 @@ const AWS = require('aws-sdk');
 const dynamoDocument = new AWS.DynamoDB.DocumentClient();
 
 exports.callback = async (event) => {
+  const others = require('./others');
+
   const dt = new Date();
   console.log(event);
 
@@ -18,27 +20,44 @@ exports.callback = async (event) => {
   const cookie = event.headers.cookie.split('; ');
 
   let cookieOauthToken;
-  // let type;
+  let type;
   for (const property in cookie) {
     if (cookie.hasOwnProperty(property)) {
       if ((cookie[property]).indexOf('oauth_token') != -1) {
         cookieOauthToken = cookie[property].slice(12);
       }
-      /* if ((cookie[property]).indexOf('type') != -1) {
+      if ((cookie[property]).indexOf('type') != -1) {
         type = cookie[property].slice(5);
-      }*/
+      }
     }
   }
 
-  /* if (type !== 'logIn') {
-      let id;
-      if (type === 'postQuestion') {
-          id = params.questionerUserId;
-      } else if (type === 'postAnswer') {
-          id = params.answererUserId;
-      }
-      await isLoggedIn(event, id);
-  }*/
+  if (type !== 'logIn') {
+    let id;
+    if (type === 'postQuestion') {
+      id = params.questionerUserId;
+    } else if (type === 'postAnswer') {
+      id = params.answererUserId;
+    }
+
+    const isLoggedIn = others.isLoggedIn(event, id);
+    if (isLoggedIn === 'authorizationError') {
+      const response = {
+        statusCode: 401,
+        body: JSON.stringify('Authorization Error!!')
+      };
+      return response;
+    } else if (isLoggedIn === 'expired') {
+      const response = {
+        statusCode: 302,
+        headers: {
+          'Location': 'https://api.peacebox.shinbunbun.info/authorize'
+        },
+        body: ''
+      };
+      return response;
+    }
+  }
 
   if (oauthToken !== cookieOauthToken) {
     console.error(`oauthToken: ${oauthToken}, cookieOauthToken: ${cookieOauthToken}`);
@@ -141,8 +160,8 @@ exports.callback = async (event) => {
     });
   });
 
-  const response = await logIn(event, userOauthToken, oauthTokenSecret, userId, accessToken, screenName);
-  /* switch (type) {
+  let response;
+  switch (type) {
     case 'logIn':
       response = await logIn(event, userOauthToken, oauthTokenSecret, userId, accessToken, screenName);
       break;
@@ -154,7 +173,7 @@ exports.callback = async (event) => {
       break;
     default:
       break;
-  }*/
+  }
 
   return response;
 };
@@ -217,7 +236,7 @@ const logIn = async (event, userOauthToken, oauthTokenSecret, userId, accessToke
   };
   return response;
 };
-/*
+
 const postQuestion = async (event, oauthToken, dt) => {
   const peaceBoxTemporaryTableParam = {
     TableName: 'peaceBoxTemporaryTable',
@@ -292,7 +311,7 @@ const postQuestion = async (event, oauthToken, dt) => {
 
 };
 
-const postAnswer = async (ebent, oauthToken) => {
+const postAnswer = async (event, oauthToken) => {
   const peaceBoxTemporaryTableParam = {
     TableName: 'peaceBoxTemporaryTable',
     KeyConditionExpression: '#k = :val',
@@ -372,7 +391,7 @@ const postAnswer = async (ebent, oauthToken) => {
     });
   });
 
-};*/
+};
 
 
 /*
