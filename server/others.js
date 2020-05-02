@@ -1,5 +1,9 @@
+const AWS = require('aws-sdk');
+const dynamoDocument = new AWS.DynamoDB.DocumentClient();
+
 exports.isLoggedIn = async (event, userId) => {
   const cookie = event.headers.cookie.split('; ');
+  let accessToken;
   for (const property in cookie) {
     if (cookie.hasOwnProperty(property)) {
       if ((cookie[property]).indexOf('accessToken') != -1) {

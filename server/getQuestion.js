@@ -1,10 +1,13 @@
+const AWS = require('aws-sdk');
+const dynamoDocument = new AWS.DynamoDB.DocumentClient();
+
 exports.getQuestion = async (event) => {
-  const others = require('./others');
+  // const others = require('./others');
 
   const params = event.queryStringParameters;
   const questionId = params.questionId;
 
-  const isLoggedIn = others.isLoggedIn(event, userId);
+  /* const isLoggedIn = others.isLoggedIn(event, userId);
   if (isLoggedIn === 'authorizationError') {
     const response = {
       statusCode: 401,
@@ -21,7 +24,7 @@ exports.getQuestion = async (event) => {
       body: ''
     };
     return response;
-  }
+  }*/
 
   const param = {
     TableName: 'peaceBoxQuestionTable',

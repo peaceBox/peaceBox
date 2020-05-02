@@ -1,8 +1,12 @@
+const AWS = require('aws-sdk');
+const dynamoDocument = new AWS.DynamoDB.DocumentClient();
+
 exports.getAllQuestion = async (event) => {
   const others = require('./others');
 
   const params = event.queryStringParameters;
   const questionerUserId = params.questionerUserId;
+  const userId = params.questionerUserId;
 
   const isLoggedIn = others.isLoggedIn(event, userId);
   if (isLoggedIn === 'authorizationError') {

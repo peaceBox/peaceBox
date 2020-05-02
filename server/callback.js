@@ -1,4 +1,4 @@
-const uuidv4 = require('uuid/v4');
+// const uuidv4 = require('uuid/v4');
 const axios = require('axios');
 const OAuth = require('oauth-1.0a');
 const crypto = require('crypto');
@@ -217,7 +217,7 @@ const logIn = async (event, userOauthToken, oauthTokenSecret, userId, accessToke
   };
   return response;
 };
-
+/*
 const postQuestion = async (event, oauthToken, dt) => {
   const peaceBoxTemporaryTableParam = {
     TableName: 'peaceBoxTemporaryTable',
@@ -372,7 +372,7 @@ const postAnswer = async (ebent, oauthToken) => {
     });
   });
 
-};
+};*/
 
 
 /*

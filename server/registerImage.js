@@ -6,6 +6,9 @@ AWS.config.update({
 exports.registerImage = async (event) => {
   const others = require('./others');
 
+  const data = JSON.parse(event.body).data;
+  const userId = data.userId;
+
   const isLoggedIn = others.isLoggedIn(event, userId);
   if (isLoggedIn === 'authorizationError') {
     const response = {
@@ -25,7 +28,6 @@ exports.registerImage = async (event) => {
     return response;
   }
 
-  const data = JSON.parse(event.body).data;
   console.log(data);
   const questionId = data.questionId;
   const image = data.image.replace(/^data:\w+\/\w+;base64,/, '');

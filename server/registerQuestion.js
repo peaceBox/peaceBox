@@ -1,10 +1,13 @@
+const AWS = require('aws-sdk');
+const dynamoDocument = new AWS.DynamoDB.DocumentClient();
+
 exports.registerQuestion = async (event) => {
   const others = require('./others');
 
   const params = event.queryStringParameters;
   const questionerUserId = params.questionerUserId;
 
-  const isLoggedIn = others.isLoggedIn(event, userId);
+  const isLoggedIn = others.isLoggedIn(event, questionerUserId);
   if (isLoggedIn === 'authorizationError') {
     const response = {
       statusCode: 401,
