@@ -11,7 +11,11 @@ exports.registerQuestion = async (event) => {
   if (isLoggedIn === 'authorizationError') {
     const response = {
       statusCode: 401,
-      body: JSON.stringify('Authorization Error!!')
+      body: JSON.stringify('Authorization Error!!'),
+      headers: {
+        'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info',
+        'Access-Control-Allow-Credentials': true
+      }
     };
     return response;
   } else if (isLoggedIn === 'expired') {
@@ -19,7 +23,8 @@ exports.registerQuestion = async (event) => {
       statusCode: 302,
       headers: {
         'Location': 'https://api.peacebox.shinbunbun.info/authorize?type=logIn',
-        'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info'
+        'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info',
+        'Access-Control-Allow-Credentials': true
       },
       body: ''
     };
@@ -53,7 +58,8 @@ exports.registerQuestion = async (event) => {
   const response = {
     statusCode: 200,
     headers: {
-      'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info'
+      'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info',
+      'Access-Control-Allow-Credentials': true
     },
     body: JSON.stringify('success')
   };

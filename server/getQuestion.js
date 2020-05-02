@@ -42,6 +42,10 @@ exports.getQuestion = async (event) => {
         reject(err);
         const response = {
           statusCode: 500,
+          headers: {
+            'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info',
+            'Access-Control-Allow-Credentials': true
+          },
           body: ''
         };
         return response;
@@ -60,7 +64,8 @@ exports.getQuestion = async (event) => {
   const response = {
     statusCode: 200,
     headers: {
-      'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info'
+      'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info',
+      'Access-Control-Allow-Credentials': true
     },
     multiValueHeaders: {
       'Set-Cookie': [

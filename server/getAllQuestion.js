@@ -20,7 +20,8 @@ exports.getAllQuestion = async (event) => {
       statusCode: 302,
       headers: {
         'Location': 'https://api.peacebox.shinbunbun.info/authorize?type=logIn',
-        'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info'
+        'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info',
+        'Access-Control-Allow-Credentials': true
       },
       body: ''
     };
@@ -54,7 +55,8 @@ exports.getAllQuestion = async (event) => {
   const response = {
     statusCode: 200,
     headers: {
-      'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info'
+      'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info',
+      'Access-Control-Allow-Credentials': true
     },
     body: JSON.stringify('success')
   };

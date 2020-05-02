@@ -15,6 +15,10 @@ exports.postQuestion = async (event) => {
   if (isLoggedIn === 'authorizationError') {
     const response = {
       statusCode: 401,
+      headers: {
+        'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info',
+        'Access-Control-Allow-Credentials': true
+      },
       body: JSON.stringify('Authorization Error!!')
     };
     return response;
@@ -22,7 +26,9 @@ exports.postQuestion = async (event) => {
     const response = {
       statusCode: 302,
       headers: {
-        'Location': 'https://api.peacebox.shinbunbun.info/authorize'
+        'Location': 'https://api.peacebox.shinbunbun.info/authorize',
+        'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info',
+        'Access-Control-Allow-Credentials': true
       },
       body: ''
     };
@@ -81,6 +87,10 @@ exports.postQuestion = async (event) => {
         console.error(err);
         const response = {
           statusCode: 500,
+          headers: {
+            'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info',
+            'Access-Control-Allow-Credentials': true
+          },
           body: ''
         };
         return response;
@@ -95,7 +105,9 @@ exports.postQuestion = async (event) => {
     statusCode: 302,
     body: '',
     headers: {
-      'Location': `https://api.twitter.com/oauth/authenticate?oauth_token=${oauthToken}`
+      'Location': `https://api.twitter.com/oauth/authenticate?oauth_token=${oauthToken}`,
+      'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info',
+      'Access-Control-Allow-Credentials': true
     },
     multiValueHeaders: {
       'Set-Cookie': [`oauth_token=${oauthToken}; HttpOnly; Secure`, 'type=postQuestion; HttpOnly; Secure']
