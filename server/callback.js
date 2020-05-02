@@ -18,15 +18,15 @@ exports.callback = async (event) => {
   const cookie = event.headers.cookie.split('; ');
 
   let cookieOauthToken;
-  let type;
+  // let type;
   for (const property in cookie) {
     if (cookie.hasOwnProperty(property)) {
       if ((cookie[property]).indexOf('oauth_token') != -1) {
         cookieOauthToken = cookie[property].slice(12);
       }
-      if ((cookie[property]).indexOf('type') != -1) {
+      /* if ((cookie[property]).indexOf('type') != -1) {
         type = cookie[property].slice(5);
-      }
+      }*/
     }
   }
 
@@ -141,8 +141,8 @@ exports.callback = async (event) => {
     });
   });
 
-  let response;
-  switch (type) {
+  const response = await logIn(event, userOauthToken, oauthTokenSecret, userId, accessToken, screenName);
+  /* switch (type) {
     case 'logIn':
       response = await logIn(event, userOauthToken, oauthTokenSecret, userId, accessToken, screenName);
       break;
@@ -154,7 +154,7 @@ exports.callback = async (event) => {
       break;
     default:
       break;
-  }
+  }*/
 
   return response;
 };

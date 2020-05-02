@@ -6,6 +6,7 @@ module.exports.hello = async (event) => {
     const registerQuestionFunc = require('./registerQuestion');
     const getQuestionFunc = require('./getQuestion');
     const registerImageFunc = require('./registerImage');
+    const postQuestionFunc = require('/postQuestion');
     // パスを取得
     const path = event.path;
     // レスポンスを定義
@@ -32,6 +33,9 @@ module.exports.hello = async (event) => {
             break;
         case '/registerimage':
             res = await registerImageFunc.registerImage(event);
+            break;
+        case '/postquestion':
+            res = await postQuestionFunc.postQuestion(event);
             break;
     }
 

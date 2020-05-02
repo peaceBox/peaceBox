@@ -1,17 +1,17 @@
 const axios = require('axios');
 const OAuth = require('oauth-1.0a');
 const crypto = require('crypto');
-const AWS = require('aws-sdk');
-const dynamoDocument = new AWS.DynamoDB.DocumentClient();
+// const AWS = require('aws-sdk');
+// const dynamoDocument = new AWS.DynamoDB.DocumentClient();
 
 const callback = 'https://api.peacebox.shinbunbun.info';
 
 exports.authorize = async (event) => {
-  const dt = new Date();
+  /* const dt = new Date();
 
-  const params = event.queryStringParameters;
+  const params = event.queryStringParameters;*/
 
-  const type = params.type;
+  /* const type = params.type;
   if (!type) {
     const response = {
       statusCode: 400,
@@ -20,19 +20,7 @@ exports.authorize = async (event) => {
       }),
     };
     return response;
-  }
-  /*
-      switch (type) {
-          case 'login':
-              res = await loginFunc(event);
-              break;
-          case 'postQuestion':
-              res = await postQuestionFunc(event);
-              break;
-          case 'postAnswer':
-              res = await postAnswerFunc(event);
-              break;
-      }*/
+  }*/
 
   // eslint-disable-next-line new-cap
   const oauth = OAuth({
@@ -69,60 +57,60 @@ exports.authorize = async (event) => {
   const data = tokenResponse.data;
   const dataSplitted = data.split('&');
   const oauthToken = dataSplitted[0].split('=')[1];
-
-  if (type === 'postQuestion') {
-    const param = {
-      TableName: 'peaceBoxTemporaryTable',
-      Item: {
-        oauthToken: oauthToken,
-        questionerUserId: params.questionerUserId,
-        question: params.question,
-        TTL: dt.setMinutes(dt.getMinutes() + 10).getTime()
-      }
-    };
-    await new Promise((resolve, reject) => {
-      dynamoDocument.put(param, (err, data) => {
-        if (err) {
-          console.error(err);
-          const response = {
-            statusCode: 500,
-            body: ''
-          };
-          return response;
-          // reject(err);
-        } else {
-          resolve(data);
+  /*
+    if (type === 'postQuestion') {
+      const param = {
+        TableName: 'peaceBoxTemporaryTable',
+        Item: {
+          oauthToken: oauthToken,
+          questionerUserId: params.questionerUserId,
+          question: params.question,
+          TTL: dt.setMinutes(dt.getMinutes() + 10).getTime()
         }
+      };
+      await new Promise((resolve, reject) => {
+        dynamoDocument.put(param, (err, data) => {
+          if (err) {
+            console.error(err);
+            const response = {
+              statusCode: 500,
+              body: ''
+            };
+            return response;
+            // reject(err);
+          } else {
+            resolve(data);
+          }
+        });
       });
-    });
-  }
+    }
 
-  if (type === 'postAnswer') {
-    const param = {
-      TableName: 'peaceBoxTemporaryTable',
-      Item: {
-        oauthToken: oauthToken,
-        answererUserId: params.answererUserId,
-        answer: params.answer,
-        questionId: params.questionId,
-        TTL: dt.setMinutes(dt.getMinutes() + 10).getTime()
-      }
-    };
-    await new Promise((resolve, reject) => {
-      dynamoDocument.put(param, (err, data) => {
-        if (err) {
-          console.error(err);
-          const response = {
-            statusCode: 500,
-            body: ''
-          };
-          return response;
-        } else {
-          resolve(data);
+    if (type === 'postAnswer') {
+      const param = {
+        TableName: 'peaceBoxTemporaryTable',
+        Item: {
+          oauthToken: oauthToken,
+          answererUserId: params.answererUserId,
+          answer: params.answer,
+          questionId: params.questionId,
+          TTL: dt.setMinutes(dt.getMinutes() + 10).getTime()
         }
+      };
+      await new Promise((resolve, reject) => {
+        dynamoDocument.put(param, (err, data) => {
+          if (err) {
+            console.error(err);
+            const response = {
+              statusCode: 500,
+              body: ''
+            };
+            return response;
+          } else {
+            resolve(data);
+          }
+        });
       });
-    });
-  }
+    }*/
 
   const response = {
     statusCode: 302,
@@ -131,7 +119,7 @@ exports.authorize = async (event) => {
       'Location': `https://api.twitter.com/oauth/authenticate?oauth_token=${oauthToken}`
     },
     multiValueHeaders: {
-      'Set-Cookie': [`oauth_token=${oauthToken}; HttpOnly; Secure`, `type=${type};HttpOnly; Secure`]
+      'Set-Cookie': [`oauth_token=${oauthToken}; HttpOnly; Secure`]
     }
   };
   return response;
