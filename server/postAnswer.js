@@ -1,35 +1,15 @@
-const AWS = require('aws-sdk');
 const axios = require('axios');
 const OAuth = require('oauth-1.0a');
 const crypto = require('crypto');
+const AWS = require('aws-sdk');
 const dynamoDocument = new AWS.DynamoDB.DocumentClient();
 
 const callback = 'https://api.peacebox.shinbunbun.info';
 
-exports.postQuestion = async (event) => {
-  const others = require('./others');
-  const data = JSON.parse(event.body).data;
-  const userId = data.userId;
-
-  const isLoggedIn = others.isLoggedIn(event, userId);
-  if (isLoggedIn === 'authorizationError') {
-    const response = {
-      statusCode: 401,
-      body: JSON.stringify('Authorization Error!!')
-    };
-    return response;
-  } else if (isLoggedIn === 'expired') {
-    const response = {
-      statusCode: 302,
-      headers: {
-        'Location': 'https://api.peacebox.shinbunbun.info/authorize'
-      },
-      body: ''
-    };
-    return response;
-  }
-
+exports.answerQuestion = async (event) => {
   const dt = new Date();
+
+  const params = event.queryStringParameters;
 
   // eslint-disable-next-line new-cap
   const oauth = OAuth({
@@ -54,24 +34,24 @@ exports.postQuestion = async (event) => {
   const authData = oauth.authorize(requestData);
   requestData.headers = oauth.toHeader(authData);
 
-  // console.log(requestData);
-
   const tokenResponse = await axios(requestData).catch((e) => {
     throw new Error({
       status: e.response.status
     });
   });
 
-  const tokenData = tokenResponse.data;
-  const dataSplitted = tokenData.split('&');
+  console.log(tokenResponse.data);
+  const data = tokenResponse.data;
+  const dataSplitted = data.split('&');
   const oauthToken = dataSplitted[0].split('=')[1];
 
   const param = {
     TableName: 'peaceBoxTemporaryTable',
     Item: {
       oauthToken: oauthToken,
-      questionerUserId: data.questionerUserId,
-      question: data.question,
+      answererUserId: params.answererUserId,
+      answer: params.answer,
+      questionId: params.questionId,
       TTL: dt.setMinutes(dt.getMinutes() + 10).getTime()
     }
   };
@@ -84,7 +64,6 @@ exports.postQuestion = async (event) => {
           body: ''
         };
         return response;
-        // reject(err);
       } else {
         resolve(data);
       }
@@ -98,7 +77,7 @@ exports.postQuestion = async (event) => {
       'Location': `https://api.twitter.com/oauth/authenticate?oauth_token=${oauthToken}`
     },
     multiValueHeaders: {
-      'Set-Cookie': [`oauth_token=${oauthToken}; HttpOnly; Secure`, 'type=postQuestion; HttpOnly; Secure']
+      'Set-Cookie': [`oauth_token=${oauthToken}; HttpOnly; Secure`, 'type=answerQuestion; HttpOnly; Secure']
     }
   };
   return response;

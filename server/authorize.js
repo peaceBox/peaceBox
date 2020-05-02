@@ -119,7 +119,7 @@ exports.authorize = async (event) => {
       'Location': `https://api.twitter.com/oauth/authenticate?oauth_token=${oauthToken}`
     },
     multiValueHeaders: {
-      'Set-Cookie': [`oauth_token=${oauthToken}; HttpOnly; Secure`]
+      'Set-Cookie': [`oauth_token=${oauthToken}; HttpOnly; Secure`, 'type=logIn; HttpOnly; Secure']
     }
   };
   return response;
