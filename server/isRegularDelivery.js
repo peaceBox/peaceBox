@@ -4,7 +4,7 @@ const dynamoDocument = new AWS.DynamoDB.DocumentClient();
 exports.isRegularDelivery = async (event) => {
   const others = require('./others');
   const data = JSON.parse(event.body).data;
-  const isRegularDelivery = data.isRegularDelivery;
+  const isRegularDelivery = data.isRegularDelivery; //
   const userId = data.userId;
 
   const isLoggedIn = others.isLoggedIn(event, userId);
