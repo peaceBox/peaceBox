@@ -37,7 +37,7 @@
 │  └── src  
 │     ├── components...コンポーネント類はここに置く  
 │     └── pages ...ここがnuxtにbuildされます  
-│  
+│   
 ├── docs...使う時があれば使う  
 └── server...サーバ側の部分。 Lambdaで動かす  
    ├── (some files)
