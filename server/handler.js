@@ -6,7 +6,7 @@ module.exports.hello = async (event) => {
     const registerQuestionFunc = require('./registerQuestion');
     const getQuestionFunc = require('./getQuestion');
     const registerImageFunc = require('./registerImage');
-    const postQuestionFunc = require('/postQuestion');
+    const postQuestionFunc = require('./postQuestion');
     const postAnswerFunc = require('./postAnswer');
     // パスを取得
     const path = event.path;
