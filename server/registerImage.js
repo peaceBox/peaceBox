@@ -72,3 +72,4 @@ exports.registerImage = async (event) => {
   };
   return response;
 };
+//
