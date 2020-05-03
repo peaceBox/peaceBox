@@ -42,7 +42,8 @@ exports.registerImage = async (event) => {
     Body: decodedImage,
     Bucket: 'peacebox-images',
     Key: [questionId, 'jpeg'].join('.'),
-    ContentType: 'image/jpeg'
+    ContentType: 'image/jpeg',
+    ACL: 'public-read'
   };
 
   const s3 = new AWS.S3();
