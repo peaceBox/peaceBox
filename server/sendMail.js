@@ -1,7 +1,6 @@
 const nodemailer = require('nodemailer');
 
-module.exports.test = async (event) => {
-  console.log(1);
+module.exports.sendMail = async (event, messageText, subject, to) => {
   const smtpConfig = nodemailer.createTransport({
     service: 'gmail',
     port: 46,
@@ -14,19 +13,20 @@ module.exports.test = async (event) => {
 
   const message = {
     from: process.env.mail,
-    to: 'takamuneyuto@gmail.com',
-    subject: 'テストです',
-    text: 'サンプルメール送ってみたよ',
+    to: to,
+    subject: subject,
+    text: messageText,
   };
 
   await new Promise((resolve, reject) => {
     smtpConfig.sendMail(message, (error, data) => {
       if (error) {
         console.log(error);
+        reject(error);
       } else {
         console.log(data);
+        resolve(data);
       }
     });
   });
-
 };

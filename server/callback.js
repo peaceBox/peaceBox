@@ -211,7 +211,7 @@ const logIn = async (event, userOauthToken, oauthTokenSecret, userId, accessToke
 
   const name = tokenResponse.data.name;
   const profileImageUrl = tokenResponse.data.profile_image_url_https.replace(/_normal/g, '');
-  console.log(name);
+  console.log(tokenResponse.data);
 
   const response = {
     statusCode: 302,
@@ -449,6 +449,13 @@ const postAnswer = async (event, oauthToken) => {
       }
     });
   });
+
+
+  const subject = '質問が届きました！';
+  const messageText = 'PeaceBocに質問が届きました！\n確認する↓\nhttps://peacebox.sugokunaritai.dev';
+
+  require('./sendMail').sendMail(event, messageText, subject, process.env.email);
+
 
   const response = {
     statusCode: 200,
