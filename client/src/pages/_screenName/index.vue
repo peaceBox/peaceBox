@@ -5,13 +5,13 @@
                 <h1>{{ targetUser.name }} のpeaceBox</h1>
             </v-card>
 
-            <question-input name="name" />
+            <question-input />
         </v-container>
     </div>
 </template>
 
 <script>
-import questionInput from '../components/questionInput'
+import questionInput from '~/components/questionInput'
 
 const targetDummyObj = {
     screenName: 'shinbunbun_',
