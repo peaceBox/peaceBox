@@ -1,4 +1,5 @@
 module.exports = {
+    mode: 'spa',
     srcDir: './src',
     head: {
         titleTemplate: '%s - PeaceBox',
