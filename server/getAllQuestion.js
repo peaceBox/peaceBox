@@ -58,7 +58,7 @@ exports.getAllQuestion = async (event) => {
       'Access-Control-Allow-Origin': 'https://peacebox.sugokunaritai.dev',
       'Access-Control-Allow-Credentials': true
     },
-    body: JSON.stringify('success')
+    body: JSON.stringify(data)
   };
   return response;
 };
