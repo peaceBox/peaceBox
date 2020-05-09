@@ -101,6 +101,30 @@ exports.postQuestion = async (event) => {
     });
   });
 
+
+  const image = data.image.replace(/^data:\w+\/\w+;base64,/, '');
+  const decodedImage = Buffer.from(image, 'base64');
+
+  const params = {
+    Body: decodedImage,
+    Bucket: 'peaceboxTemporaryImages',
+    Key: [oauthToken, 'jpeg'].join('.'),
+    ContentType: 'image/jpeg'
+  };
+
+  const s3 = new AWS.S3();
+  await new Promise((resolve, reject) => {
+    s3.upload(params, function (err, data) {
+      if (err) {
+        console.log('error : ', err);
+        reject(err);
+      } else {
+        console.log('success');
+        resolve();
+      }
+    });
+  });
+
   const response = {
     statusCode: 302,
     body: '',
