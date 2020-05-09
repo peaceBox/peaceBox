@@ -5,10 +5,9 @@ exports.getAllQuestion = async (event) => {
   const others = require('./others');
 
   const params = event.queryStringParameters;
-  const questionerUserId = params.questionerUserId;
-  const userId = params.questionerUserId;
+  const answererUserId = params.answererUserId;
 
-  const isLoggedIn = others.isLoggedIn(event, userId);
+  const isLoggedIn = others.isLoggedIn(event, answererUserId);
   if (isLoggedIn === 'authorizationError') {
     const response = {
       statusCode: 401,
@@ -34,10 +33,10 @@ exports.getAllQuestion = async (event) => {
     IndexName: 'questionerUserId-index',
     KeyConditionExpression: '#k = :val',
     ExpressionAttributeValues: {
-      ':val': questionerUserId
+      ':val': answererUserId
     },
     ExpressionAttributeNames: {
-      '#k': 'questionerUserId-index'
+      '#k': 'answererUserId-index'
     }
   };
   const promise = await new Promise((resolve, reject) => {
