@@ -13,7 +13,7 @@ exports.registerQuestion = async (event) => {
       statusCode: 401,
       body: JSON.stringify('Authorization Error!!'),
       headers: {
-        'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info',
+        'Access-Control-Allow-Origin': 'https://peacebox.sugokunaritai.dev',
         'Access-Control-Allow-Credentials': true
       }
     };
@@ -22,8 +22,8 @@ exports.registerQuestion = async (event) => {
     const response = {
       statusCode: 302,
       headers: {
-        'Location': 'https://api.peacebox.shinbunbun.info/authorize?type=logIn',
-        'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info',
+        'Location': 'https://api.peacebox.sugokunaritai.dev/authorize?type=logIn',
+        'Access-Control-Allow-Origin': 'https://peacebox.sugokunaritai.dev',
         'Access-Control-Allow-Credentials': true
       },
       body: ''
@@ -58,7 +58,7 @@ exports.registerQuestion = async (event) => {
   const response = {
     statusCode: 200,
     headers: {
-      'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info',
+      'Access-Control-Allow-Origin': 'https://peacebox.sugokunaritai.dev',
       'Access-Control-Allow-Credentials': true
     },
     body: JSON.stringify('success')

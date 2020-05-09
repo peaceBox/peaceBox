@@ -51,7 +51,7 @@ exports.callback = async (event) => {
       const response = {
         statusCode: 302,
         headers: {
-          'Location': 'https://api.peacebox.shinbunbun.info/authorize'
+          'Location': 'https://api.peacebox.sugokunaritai.dev/authorize'
         },
         body: ''
       };
@@ -216,20 +216,20 @@ const logIn = async (event, userOauthToken, oauthTokenSecret, userId, accessToke
   const response = {
     statusCode: 302,
     headers: {
-      'Location': 'https://peacebox.shinbunbun.info',
+      'Location': 'https://peacebox.sugokunaritai.dev',
       // 'Location': 'http://takanawa2019.shinbunbun.info',
       // 'Set-Cookie': `accessToken=${accessToken}; HttpOnly; max-age=86400`
-      // 'Set-Cookie': `accessToken=${accessToken}; HttpOnly; Secure; max-age=86400; domain=peacebox.shinbunbun.info`
+      // 'Set-Cookie': `accessToken=${accessToken}; HttpOnly; Secure; max-age=86400; domain=peacebox.sugokunaritai.dev`
     },
     multiValueHeaders: {
       'Set-Cookie': [
         'oauth_token=0; max-age=0',
         'type=0; max-age=0',
-        `accessToken=${accessToken}; HttpOnly; Secure; max-age=86400; domain=peacebox.shinbunbun.info`,
-        `userId=${userId}; Secure; max-age=86400; domain=peacebox.shinbunbun.info`,
-        `screenName=${screenName}; Secure; max-age=86400; domain=peacebox.shinbunbun.info`,
-        `name=${encodeURI(name)}; Secure; max-age=86400; domain=peacebox.shinbunbun.info`,
-        `profileImageUrl=${profileImageUrl}; Secure; max-age=86400; domain=peacebox.shinbunbun.info`
+        `accessToken=${accessToken}; HttpOnly; Secure; max-age=86400; domain=peacebox.sugokunaritai.dev`,
+        `userId=${userId}; Secure; max-age=86400; domain=peacebox.sugokunaritai.dev`,
+        `screenName=${screenName}; Secure; max-age=86400; domain=peacebox.sugokunaritai.dev`,
+        `name=${encodeURI(name)}; Secure; max-age=86400; domain=peacebox.sugokunaritai.dev`,
+        `profileImageUrl=${profileImageUrl}; Secure; max-age=86400; domain=peacebox.sugokunaritai.dev`
       ]
     },
     body: ''

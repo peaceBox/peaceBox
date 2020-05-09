@@ -4,7 +4,7 @@ const OAuth = require('oauth-1.0a');
 const crypto = require('crypto');
 const dynamoDocument = new AWS.DynamoDB.DocumentClient();
 
-const callback = 'https://api.peacebox.shinbunbun.info';
+const callback = 'https://api.peacebox.sugokunaritai.dev';
 
 exports.postQuestion = async (event) => {
   const others = require('./others');
@@ -16,7 +16,7 @@ exports.postQuestion = async (event) => {
     const response = {
       statusCode: 401,
       headers: {
-        'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info',
+        'Access-Control-Allow-Origin': 'https://peacebox.sugokunaritai.dev',
         'Access-Control-Allow-Credentials': true
       },
       body: JSON.stringify('Authorization Error!!')
@@ -26,8 +26,8 @@ exports.postQuestion = async (event) => {
     const response = {
       statusCode: 302,
       headers: {
-        'Location': 'https://api.peacebox.shinbunbun.info/authorize',
-        'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info',
+        'Location': 'https://api.peacebox.sugokunaritai.dev/authorize',
+        'Access-Control-Allow-Origin': 'https://peacebox.sugokunaritai.dev',
         'Access-Control-Allow-Credentials': true
       },
       body: ''
@@ -88,7 +88,7 @@ exports.postQuestion = async (event) => {
         const response = {
           statusCode: 500,
           headers: {
-            'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info',
+            'Access-Control-Allow-Origin': 'https://peacebox.sugokunaritai.dev',
             'Access-Control-Allow-Credentials': true
           },
           body: ''
@@ -106,7 +106,7 @@ exports.postQuestion = async (event) => {
     body: '',
     headers: {
       'Location': `https://api.twitter.com/oauth/authenticate?oauth_token=${oauthToken}`,
-      'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info',
+      'Access-Control-Allow-Origin': 'https://peacebox.sugokunaritai.dev',
       'Access-Control-Allow-Credentials': true
     },
     multiValueHeaders: {

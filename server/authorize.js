@@ -4,7 +4,7 @@ const crypto = require('crypto');
 // const AWS = require('aws-sdk');
 // const dynamoDocument = new AWS.DynamoDB.DocumentClient();
 
-const callback = 'https://api.peacebox.shinbunbun.info';
+const callback = 'https://api.peacebox.sugokunaritai.dev';
 
 exports.authorize = async (event) => {
   /* const dt = new Date();
@@ -124,4 +124,3 @@ exports.authorize = async (event) => {
   };
   return response;
 };
-//

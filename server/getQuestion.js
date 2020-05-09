@@ -18,8 +18,8 @@ exports.getQuestion = async (event) => {
     const response = {
       statusCode: 302,
       headers: {
-        'Location': 'https://api.peacebox.shinbunbun.info/authorize?type=logIn',
-        'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info'
+        'Location': 'https://api.peacebox.sugokunaritai.dev/authorize?type=logIn',
+        'Access-Control-Allow-Origin': 'https://peacebox.sugokunaritai.dev'
       },
       body: ''
     };
@@ -43,7 +43,7 @@ exports.getQuestion = async (event) => {
         const response = {
           statusCode: 500,
           headers: {
-            'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info',
+            'Access-Control-Allow-Origin': 'https://peacebox.sugokunaritai.dev',
             'Access-Control-Allow-Credentials': true
           },
           body: ''
@@ -64,15 +64,15 @@ exports.getQuestion = async (event) => {
   const response = {
     statusCode: 200,
     headers: {
-      'Access-Control-Allow-Origin': 'https://peacebox.shinbunbun.info',
+      'Access-Control-Allow-Origin': 'https://peacebox.sugokunaritai.dev',
       'Access-Control-Allow-Credentials': true
     },
     multiValueHeaders: {
       'Set-Cookie': [
-        `answer=${answer}; Secure; max-age=86400; domain=peacebox.shinbunbun.info`,
-        `questionerScreenName=${questionerScreenName}; Secure; max-age=86400; domain=peacebox.shinbunbun.info`,
-        `answererScreenName=${encodeURI(answererScreenName)}; Secure; max-age=86400; domain=peacebox.shinbunbun.info`,
-        `question=${question}; Secure; max-age=86400; domain=peacebox.shinbunbun.info`
+        `answer=${answer}; Secure; max-age=86400; domain=peacebox.sugokunaritai.dev`,
+        `questionerScreenName=${questionerScreenName}; Secure; max-age=86400; domain=peacebox.sugokunaritai.dev`,
+        `answererScreenName=${encodeURI(answererScreenName)}; Secure; max-age=86400; domain=peacebox.sugokunaritai.dev`,
+        `question=${question}; Secure; max-age=86400; domain=peacebox.sugokunaritai.dev`
       ]
     },
     body: ''
