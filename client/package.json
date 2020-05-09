@@ -13,7 +13,8 @@
         "generate": "eslint './**/*.{js,ts,vue}'  --fix && nuxt generate",
         "lint-and-generate": "eslint './**/*.{js,ts,vue}' && nuxt generate",
         "test": "echo 'skip tests (there is no test)'",
-        "lint": "eslint './src/**/*.{js,ts,vue}' --fix"
+        "lint": "eslint './src/**/*.{js,ts,vue}' --fix",
+        "deploy": "yarn generate:deploy && aws s3 sync dist/ s3://peacebox-frontend --delete"
     },
     "dependencies": {
         "@nuxtjs/vuetify": "^1.11.0",
