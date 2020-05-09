@@ -264,10 +264,12 @@ const postQuestion = async (event, oauthToken, dt) => {
   });
   const peaceBoxTemporaryTableValue = peaceBoxTemporaryTableValues.Items[0];
 
+  const questionId = uuidv4().split('-').join('');
+
   const peaceBoxQuestionTableParam = {
     TableName: 'peaceBoxQuestionTable',
     Item: {
-      questionId: uuidv4().split('-').join(''),
+      questionId: questionId,
       questionerUserId: peaceBoxTemporaryTableValue.questionerUserId,
       question: peaceBoxTemporaryTableValue.question,
       registeredDate: dt.getTime()
@@ -311,7 +313,7 @@ const postQuestion = async (event, oauthToken, dt) => {
 
   const getParams = {
     Bucket: 'peaceboxTemporaryImages',
-    Key: [oauthToken, 'jpeg'].join('.')
+    Key: [questionId, 'jpeg'].join('.')
   };
 
   const s3 = new AWS.S3();
@@ -331,8 +333,41 @@ const postQuestion = async (event, oauthToken, dt) => {
     });
   })();
 
-  console.log(image);
+  const decodedImage = Buffer.from(image, 'base64');
 
+  const uploadParams = {
+    Body: decodedImage,
+    Bucket: 'peacebox-images',
+    Key: [questionId, 'jpeg'].join('.'),
+    ContentType: 'image/jpeg',
+    ACL: 'public-read'
+  };
+
+  await new Promise((resolve, reject) => {
+    s3.upload(uploadParams, function (err, data) {
+      if (err) {
+        console.log('error : ', err);
+        reject(err);
+      } else {
+        console.log('success');
+        resolve();
+      }
+    });
+  });
+
+  const response = {
+    statusCode: 302,
+    headers: {
+      'Location': 'https://peacebox.sugokunaritai.dev',
+      'Access-Control-Allow-Origin': 'https://peacebox.sugokunaritai.dev',
+      'Access-Control-Allow-Credentials': true
+    },
+    body: JSON.stringify({
+      questionId: questionId,
+      imageUrl: `https://peacebox-images.s3-ap-northeast-1.amazonaws.com/${questionId}.jpeg`
+    })
+  };
+  return response;
 };
 
 const postAnswer = async (event, oauthToken) => {
@@ -414,6 +449,17 @@ const postAnswer = async (event, oauthToken) => {
       }
     });
   });
+
+  const response = {
+    statusCode: 200,
+    headers: {
+      'Location': 'https://peacebox.sugokunaritai.dev',
+      'Access-Control-Allow-Origin': 'https://peacebox.sugokunaritai.dev',
+      'Access-Control-Allow-Credentials': true
+    },
+    body: ''
+  };
+  return response;
 
 };
 
