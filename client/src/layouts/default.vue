@@ -1,6 +1,6 @@
 <template>
     <v-app id="inspire">
-        <v-app-bar app color="#0D90BA" dark>
+        <v-app-bar app color="#5BB3E5" dark>
             <v-btn icon href="/">
                 <v-icon>mdi-home</v-icon>
             </v-btn>
@@ -27,7 +27,7 @@ export default {
     data: () => ({
         drawer: false,
     }),
-};
+}
 </script>
 <style>
 .head_title {
