@@ -6,7 +6,7 @@ const AWS = require('aws-sdk');
 const dynamoDocument = new AWS.DynamoDB.DocumentClient();
 
 exports.callback = async (event) => {
-  const others = require('./others');
+  // const others = require('./others');
 
   const dt = new Date();
   console.log(event);
@@ -32,32 +32,38 @@ exports.callback = async (event) => {
     }
   }
 
-  if (type !== 'logIn') {
-    let id;
-    if (type === 'postQuestion') {
-      id = params.questionerUserId;
-    } else if (type === 'postAnswer') {
-      id = params.answererUserId;
-    }
+  console.log(type);
+  /*
+    if (type !== 'logIn') {
+      let id;
+      if (type === 'postQuestion') {
+        id = params.questionerUserId;
+      } else if (type === 'postAnswer') {
+        id = params.answererUserId;
+      }
 
-    const isLoggedIn = others.isLoggedIn(event, id);
-    if (isLoggedIn === 'authorizationError') {
-      const response = {
-        statusCode: 401,
-        body: JSON.stringify('Authorization Error!!')
-      };
-      return response;
-    } else if (isLoggedIn === 'expired') {
-      const response = {
-        statusCode: 302,
-        headers: {
-          'Location': 'https://api.peacebox.sugokunaritai.dev/authorize'
-        },
-        body: ''
-      };
-      return response;
+      console.log(id);
+
+      const isLoggedIn = await others.isLoggedIn(event, id);
+      if (isLoggedIn === 'authorizationError') {
+        const response = {
+          statusCode: 401,
+          body: JSON.stringify('Authorization Error!!')
+        };
+        return response;
+      } else if (isLoggedIn === 'expired') {
+        const response = {
+          statusCode: 302,
+          headers: {
+            'Location': 'https://api.peacebox.sugokunaritai.dev/authorize'
+          },
+          body: ''
+        };
+        return response;
+      }
     }
-  }
+  */
+  console.log(1);
 
   if (oauthToken !== cookieOauthToken) {
     console.error(`oauthToken: ${oauthToken}, cookieOauthToken: ${cookieOauthToken}`);
@@ -91,6 +97,8 @@ exports.callback = async (event) => {
 
   const authData = oauth.authorize(requestData);
   requestData.headers = oauth.toHeader(authData);
+
+  console.log(requestData);
 
   const tokenResponse = await axios(requestData).catch((e) => {
     throw new Error(JSON.stringify({
@@ -166,7 +174,7 @@ exports.callback = async (event) => {
       response = await logIn(event, userOauthToken, oauthTokenSecret, userId, accessToken, screenName);
       break;
     case 'postQuestion':
-      response = await postQuestion(event, oauthToken, dt);
+      response = await postQuestion(event, oauthToken, dt, screenName);
       break;
     case 'postAnswer':
       response = await postAnswer(event, oauthToken);
@@ -237,7 +245,7 @@ const logIn = async (event, userOauthToken, oauthTokenSecret, userId, accessToke
   return response;
 };
 
-const postQuestion = async (event, oauthToken, dt) => {
+const postQuestion = async (event, oauthToken, dt, screenName) => {
   const peaceBoxTemporaryTableParam = {
     TableName: 'peaceBoxTemporaryTable',
     KeyConditionExpression: '#k = :val',
@@ -313,7 +321,7 @@ const postQuestion = async (event, oauthToken, dt) => {
 
   const getParams = {
     Bucket: 'peacebox-temporary-images',
-    Key: [questionId, 'jpeg'].join('.')
+    Key: [oauthToken, 'jpeg'].join('.')
   };
 
   const s3 = new AWS.S3();
@@ -363,7 +371,7 @@ const postQuestion = async (event, oauthToken, dt) => {
   const response = {
     statusCode: 302,
     headers: {
-      'Location': 'https://peacebox.sugokunaritai.dev',
+      'Location': `https://peacebox.sugokunaritai.dev/${screenName}/${questionId}?type=posted`,
       'Access-Control-Allow-Origin': 'https://peacebox.sugokunaritai.dev',
       'Access-Control-Allow-Credentials': true
     },

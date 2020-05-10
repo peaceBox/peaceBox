@@ -128,16 +128,18 @@ exports.postQuestion = async (event) => {
   });
 
   const response = {
-    statusCode: 303,
+    statusCode: 200,
     body: '',
     headers: {
-      'Location': `https://api.twitter.com/oauth/authenticate?oauth_token=${oauthToken}`,
       'Access-Control-Allow-Origin': 'https://peacebox.sugokunaritai.dev',
       'Access-Control-Allow-Credentials': true
     },
     multiValueHeaders: {
       'Set-Cookie': [`oauth_token=${oauthToken}; HttpOnly; Secure`, 'type=postQuestion; HttpOnly; Secure']
-    }
+    },
+    body: JSON.stringify({
+      location: `https://api.twitter.com/oauth/authenticate?oauth_token=${oauthToken}`
+    })
   };
   return response;
 };
