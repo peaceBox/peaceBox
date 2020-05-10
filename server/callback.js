@@ -312,7 +312,7 @@ const postQuestion = async (event, oauthToken, dt) => {
   });
 
   const getParams = {
-    Bucket: 'peaceboxTemporaryImages',
+    Bucket: 'peacebox-temporary-images',
     Key: [questionId, 'jpeg'].join('.')
   };
 
@@ -354,6 +354,11 @@ const postQuestion = async (event, oauthToken, dt) => {
       }
     });
   });
+
+  const subject = '質問が届きました！';
+  const messageText = 'PeaceBocに質問が届きました！\n確認する↓\nhttps://peacebox.sugokunaritai.dev';
+
+  require('./sendMail').sendMail(event, messageText, subject, process.env.email);
 
   const response = {
     statusCode: 302,
@@ -449,13 +454,6 @@ const postAnswer = async (event, oauthToken) => {
       }
     });
   });
-
-
-  const subject = '質問が届きました！';
-  const messageText = 'PeaceBocに質問が届きました！\n確認する↓\nhttps://peacebox.sugokunaritai.dev';
-
-  require('./sendMail').sendMail(event, messageText, subject, process.env.email);
-
 
   const response = {
     statusCode: 200,

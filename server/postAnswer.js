@@ -71,7 +71,7 @@ exports.answerQuestion = async (event) => {
   });
 
   const response = {
-    statusCode: 302,
+    statusCode: 303,
     body: '',
     headers: {
       'Location': `https://api.twitter.com/oauth/authenticate?oauth_token=${oauthToken}`

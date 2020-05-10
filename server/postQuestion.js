@@ -8,10 +8,11 @@ const callback = 'https://api.peacebox.sugokunaritai.dev';
 
 exports.postQuestion = async (event) => {
   const others = require('./others');
-  const data = JSON.parse(event.body).data;
-  const userId = data.userId;
+  const data = JSON.parse(event.body);
+  const questionerUserId = data.questionerUserId;
+  const answererUserId = data.answererUserId;
 
-  const isLoggedIn = others.isLoggedIn(event, userId);
+  const isLoggedIn = others.isLoggedIn(event, questionerUserId);
   if (isLoggedIn === 'authorizationError') {
     const response = {
       statusCode: 401,
@@ -76,9 +77,10 @@ exports.postQuestion = async (event) => {
     TableName: 'peaceBoxTemporaryTable',
     Item: {
       oauthToken: oauthToken,
-      questionerUserId: data.questionerUserId,
+      questionerUserId: questionerUserId,
+      answererUserId: answererUserId,
       question: data.question,
-      TTL: dt.setMinutes(dt.getMinutes() + 10).getTime()
+      TTL: dt.setMinutes(dt.getMinutes() + 10)
     }
   };
   await new Promise((resolve, reject) => {
@@ -107,7 +109,7 @@ exports.postQuestion = async (event) => {
 
   const params = {
     Body: decodedImage,
-    Bucket: 'peaceboxTemporaryImages',
+    Bucket: 'peacebox-temporary-images',
     Key: [oauthToken, 'jpeg'].join('.'),
     ContentType: 'image/jpeg'
   };
@@ -126,7 +128,7 @@ exports.postQuestion = async (event) => {
   });
 
   const response = {
-    statusCode: 302,
+    statusCode: 303,
     body: '',
     headers: {
       'Location': `https://api.twitter.com/oauth/authenticate?oauth_token=${oauthToken}`,
