@@ -9,6 +9,7 @@ module.exports.hello = async (event) => {
     const postQuestionFunc = require('./postQuestion');
     const postAnswerFunc = require('./postAnswer');
     const loggedInFunc = require('./loggedIn');
+    const deleteAccountFunc = require('./deleteAccount');
     // パスを取得
     const path = event.path;
     // レスポンスを定義
@@ -42,8 +43,12 @@ module.exports.hello = async (event) => {
         case '/postanswer':
             res = await postAnswerFunc.postQuestion(event);
             break;
-        case 'loggedin':
+        case '/loggedin':
             res = await loggedInFunc.loggedIn(event);
+            break;
+        case '/deleteaccount':
+            res = await deleteAccountFunc.deleteAccount(event);
+            break;
     }
 
     console.log(res);
