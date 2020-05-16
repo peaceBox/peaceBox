@@ -67,12 +67,12 @@ exports.getQuestion = async (event) => {
       'Access-Control-Allow-Origin': 'https://peacebox.sugokunaritai.dev',
       'Access-Control-Allow-Credentials': true
     },
-    body: {
-      'answer': answer,
-      'questionerScreenName': questionerScreenName,
-      'answererScreenName': answererScreenName,
-      'question': question
-    }
+    body: JSON.stringify({
+      answer: answer,
+      questionerScreenName: questionerScreenName,
+      answererScreenName: answererScreenName,
+      question: question
+    })
   };
   return response;
 };
