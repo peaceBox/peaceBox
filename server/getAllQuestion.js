@@ -36,7 +36,7 @@ exports.getAllQuestion = async (event) => {
       ':val': answererUserId
     },
     ExpressionAttributeNames: {
-      '#k': 'answererUserId-index'
+      '#k': 'answererUserId'
     }
   };
   const promise = await new Promise((resolve, reject) => {
