@@ -2,6 +2,7 @@ const AWS = require('aws-sdk');
 const dynamoDocument = new AWS.DynamoDB.DocumentClient();
 
 exports.screenNameToUserId = async (screenName) => {
+  // console.log(screenName);
   const param = {
     TableName: 'peaceBoxUserTable',
     IndexName: 'screenName-index',
@@ -10,7 +11,7 @@ exports.screenNameToUserId = async (screenName) => {
       ':val': screenName
     },
     ExpressionAttributeNames: {
-      '#k': 'screenName-index'
+      '#k': 'screenName'
     }
   };
   const promise = await new Promise((resolve, reject) => {
@@ -22,6 +23,7 @@ exports.screenNameToUserId = async (screenName) => {
       }
     });
   });
-  const data = promise.Items[0];
-  console.log(data);
+  const userId = promise.Items[0].userId;
+  // console.log(userId);
+  return userId;
 };
