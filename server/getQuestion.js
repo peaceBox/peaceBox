@@ -67,15 +67,12 @@ exports.getQuestion = async (event) => {
       'Access-Control-Allow-Origin': 'https://peacebox.sugokunaritai.dev',
       'Access-Control-Allow-Credentials': true
     },
-    multiValueHeaders: {
-      'Set-Cookie': [
-        `answer=${answer}; Secure; max-age=86400; domain=peacebox.sugokunaritai.dev`,
-        `questionerScreenName=${questionerScreenName}; Secure; max-age=86400; domain=peacebox.sugokunaritai.dev`,
-        `answererScreenName=${encodeURI(answererScreenName)}; Secure; max-age=86400; domain=peacebox.sugokunaritai.dev`,
-        `question=${question}; Secure; max-age=86400; domain=peacebox.sugokunaritai.dev`
-      ]
-    },
-    body: ''
+    body: {
+      'answer': answer,
+      'questionerScreenName': questionerScreenName,
+      'answererScreenName': answererScreenName,
+      'question': question
+    }
   };
   return response;
 };
