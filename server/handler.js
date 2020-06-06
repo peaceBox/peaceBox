@@ -2,6 +2,8 @@ module.exports.hello = async (event) => {
     // パスを取得
     const path = event.path;
     const method = event.httpMethod;
+    const host = event.headers.Host;
+    const cors = (host === 'api.peacebox.sugokunaritai.dev') ? 'https://peacebox.sugokunaritai.dev' : 'http://localhost:8080';
     // レスポンスを定義
     let res;
     // パスによって条件分岐
@@ -54,6 +56,10 @@ module.exports.hello = async (event) => {
     }
 
     console.log(res);
+
+    if (res['headers']['Access-Control-Allow-Origin']) {
+        res['headers']['Access-Control-Allow-Origin'] = cors;
+    }
 
     return res;
 };
