@@ -12,7 +12,7 @@ exports.deleteAccount = async (event) => {
     const response = {
       statusCode: 401,
       headers: {
-        'Access-Control-Allow-Origin': 'https://peacebox.sugokunaritai.dev',
+        'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Credentials': true
       },
       body: JSON.stringify('Authorization Error!!')
@@ -60,7 +60,7 @@ exports.deleteAccount = async (event) => {
   const response = {
     statusCode: 200,
     headers: {
-      'Access-Control-Allow-Origin': 'https://peacebox.sugokunaritai.dev',
+      'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Credentials': true
     },
     body: ''

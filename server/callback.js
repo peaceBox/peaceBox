@@ -372,7 +372,7 @@ const postQuestion = async (event, oauthToken, dt, screenName) => {
     statusCode: 302,
     headers: {
       'Location': `https://peacebox.sugokunaritai.dev/${screenName}/${questionId}?type=posted`,
-      'Access-Control-Allow-Origin': 'https://peacebox.sugokunaritai.dev',
+      'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Credentials': true
     },
     body: JSON.stringify({
@@ -467,7 +467,7 @@ const postAnswer = async (event, oauthToken) => {
     statusCode: 200,
     headers: {
       'Location': 'https://peacebox.sugokunaritai.dev',
-      'Access-Control-Allow-Origin': 'https://peacebox.sugokunaritai.dev',
+      'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Credentials': true
     },
     body: ''

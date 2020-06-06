@@ -17,7 +17,7 @@ exports.postQuestion = async (event) => {
     const response = {
       statusCode: 401,
       headers: {
-        'Access-Control-Allow-Origin': 'https://peacebox.sugokunaritai.dev',
+        'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Credentials': true
       },
       body: JSON.stringify('Authorization Error!!')
@@ -28,7 +28,7 @@ exports.postQuestion = async (event) => {
       statusCode: 302,
       headers: {
         'Location': 'https://api.peacebox.sugokunaritai.dev/authorize',
-        'Access-Control-Allow-Origin': 'https://peacebox.sugokunaritai.dev',
+        'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Credentials': true
       },
       body: ''
@@ -90,7 +90,7 @@ exports.postQuestion = async (event) => {
         const response = {
           statusCode: 500,
           headers: {
-            'Access-Control-Allow-Origin': 'https://peacebox.sugokunaritai.dev',
+            'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Credentials': true
           },
           body: ''
@@ -131,7 +131,7 @@ exports.postQuestion = async (event) => {
     statusCode: 200,
     body: '',
     headers: {
-      'Access-Control-Allow-Origin': 'https://peacebox.sugokunaritai.dev',
+      'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Credentials': true
     },
     multiValueHeaders: {

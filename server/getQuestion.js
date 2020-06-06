@@ -19,7 +19,7 @@ exports.getQuestion = async (event) => {
       statusCode: 302,
       headers: {
         'Location': 'https://api.peacebox.sugokunaritai.dev/authorize?type=logIn',
-        'Access-Control-Allow-Origin': 'https://peacebox.sugokunaritai.dev'
+        'Access-Control-Allow-Origin': '*'
       },
       body: ''
     };
@@ -43,7 +43,7 @@ exports.getQuestion = async (event) => {
         const response = {
           statusCode: 500,
           headers: {
-            'Access-Control-Allow-Origin': 'https://peacebox.sugokunaritai.dev',
+            'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Credentials': true
           },
           body: ''
@@ -64,7 +64,7 @@ exports.getQuestion = async (event) => {
   const response = {
     statusCode: 200,
     headers: {
-      'Access-Control-Allow-Origin': 'https://peacebox.sugokunaritai.dev',
+      'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Credentials': true
     },
     body: JSON.stringify({
