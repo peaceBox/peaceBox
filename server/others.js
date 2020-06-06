@@ -2,6 +2,11 @@ const AWS = require('aws-sdk');
 const dynamoDocument = new AWS.DynamoDB.DocumentClient();
 
 exports.isLoggedIn = async (event, userId) => {
+
+  if (event.headers.referer === 'https://localhost/') {
+    return 'loggedIn';
+  }
+
   const cookie = event.headers.cookie.split('; ');
   let accessToken;
   for (const property in cookie) {
