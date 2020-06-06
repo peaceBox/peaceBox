@@ -21,6 +21,7 @@ exports.callback = async (event) => {
 
   let cookieOauthToken;
   let type;
+  let referer;
   for (const property in cookie) {
     if (cookie.hasOwnProperty(property)) {
       if ((cookie[property]).indexOf('oauth_token') != -1) {
@@ -28,6 +29,9 @@ exports.callback = async (event) => {
       }
       if ((cookie[property]).indexOf('type') != -1) {
         type = cookie[property].slice(5);
+      }
+      if ((cookie[property]).indexOf('referer') != -1) {
+        referer = cookie[property].slice(8);
       }
     }
   }
@@ -171,13 +175,13 @@ exports.callback = async (event) => {
   let response;
   switch (type) {
     case 'logIn':
-      response = await logIn(event, userOauthToken, oauthTokenSecret, userId, accessToken, screenName);
+      response = await logIn(event, userOauthToken, oauthTokenSecret, userId, accessToken, screenName, referer);
       break;
     case 'postQuestion':
-      response = await postQuestion(event, oauthToken, dt, screenName);
+      response = await postQuestion(event, oauthToken, dt, screenName, referer);
       break;
     case 'postAnswer':
-      response = await postAnswer(event, oauthToken);
+      response = await postAnswer(event, oauthToken, referer);
       break;
     default:
       break;
@@ -186,7 +190,7 @@ exports.callback = async (event) => {
   return response;
 };
 
-const logIn = async (event, userOauthToken, oauthTokenSecret, userId, accessToken, screenName) => {
+const logIn = async (event, userOauthToken, oauthTokenSecret, userId, accessToken, screenName, referer) => {
   // eslint-disable-next-line new-cap
   const oauth = OAuth({
     consumer: {
@@ -224,7 +228,7 @@ const logIn = async (event, userOauthToken, oauthTokenSecret, userId, accessToke
   const response = {
     statusCode: 302,
     headers: {
-      'Location': 'https://peacebox.sugokunaritai.dev',
+      'Location': (referer === 'http://localhost/') ? 'http://localhost:3000' : 'https://peacebox.sugokunaritai.dev',
       // 'Location': 'http://takanawa2019.shinbunbun.info',
       // 'Set-Cookie': `accessToken=${accessToken}; HttpOnly; max-age=86400`
       // 'Set-Cookie': `accessToken=${accessToken}; HttpOnly; Secure; max-age=86400; domain=peacebox.sugokunaritai.dev`
@@ -245,7 +249,7 @@ const logIn = async (event, userOauthToken, oauthTokenSecret, userId, accessToke
   return response;
 };
 
-const postQuestion = async (event, oauthToken, dt, screenName) => {
+const postQuestion = async (event, oauthToken, dt, screenName, referer) => {
   const peaceBoxTemporaryTableParam = {
     TableName: 'peaceBoxTemporaryTable',
     KeyConditionExpression: '#k = :val',
@@ -371,7 +375,7 @@ const postQuestion = async (event, oauthToken, dt, screenName) => {
   const response = {
     statusCode: 302,
     headers: {
-      'Location': `https://peacebox.sugokunaritai.dev/${screenName}/${questionId}?type=posted`,
+      'Location': (referer === 'http://localhost/') ? `http://localhost:3000/${screenName}/${questionId}?type=posted` : `https://peacebox.sugokunaritai.dev/${screenName}/${questionId}?type=posted`,
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Credentials': true
     },
@@ -383,7 +387,7 @@ const postQuestion = async (event, oauthToken, dt, screenName) => {
   return response;
 };
 
-const postAnswer = async (event, oauthToken) => {
+const postAnswer = async (event, oauthToken, referer) => {
   const peaceBoxTemporaryTableParam = {
     TableName: 'peaceBoxTemporaryTable',
     KeyConditionExpression: '#k = :val',
@@ -466,7 +470,7 @@ const postAnswer = async (event, oauthToken) => {
   const response = {
     statusCode: 200,
     headers: {
-      'Location': 'https://peacebox.sugokunaritai.dev',
+      'Location': (referer === 'http://localhost/') ? 'http://localhost:3000' : 'https://peacebox.sugokunaritai.dev',
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Credentials': true
     },
