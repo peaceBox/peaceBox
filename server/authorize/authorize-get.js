@@ -6,7 +6,7 @@ const crypto = require('crypto');
 
 const callback = 'https://api.peacebox.sugokunaritai.dev';
 
-exports.authorize = async (event) => {
+exports.main = async (event) => {
   /* const dt = new Date();
 
   const params = event.queryStringParameters;*/

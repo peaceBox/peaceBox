@@ -6,7 +6,7 @@ const dynamoDocument = new AWS.DynamoDB.DocumentClient();
 
 const callback = 'https://api.peacebox.sugokunaritai.dev';
 
-exports.answerQuestion = async (event) => {
+exports.main = async (event) => {
   const dt = new Date();
 
   const params = event.queryStringParameters;

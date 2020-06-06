@@ -1,53 +1,55 @@
 module.exports.hello = async (event) => {
-    const authorizeFunc = require('./authorize');
-    const callbackFunc = require('./callback');
-    const isRegularDeliveryFunc = require('./isRegularDelivery');
-    const getAllQuestionFunc = require('./getAllQuestion');
-    const registerQuestionFunc = require('./registerQuestion');
-    const getQuestionFunc = require('./getQuestion');
-    const registerImageFunc = require('./registerImage');
-    const postQuestionFunc = require('./postQuestion');
-    const postAnswerFunc = require('./postAnswer');
-    const loggedInFunc = require('./loggedIn');
-    const deleteAccountFunc = require('./deleteAccount');
     // パスを取得
     const path = event.path;
+    const method = event.httpMethod;
     // レスポンスを定義
     let res;
     // パスによって条件分岐
     switch (path) {
         case '/authorize':
-            res = await authorizeFunc.authorize(event);
+            switch (method) {
+                case 'GET':
+                    res = await require('./authorize/authorize-get').main(event);
+                    break;
+            }
             break;
         case '/callback':
-            res = await callbackFunc.callback(event);
+            switch (method) {
+                case 'GET':
+                    res = await require('./callback/callback-get').main(event);
+                    break;
+            }
             break;
-        case '/iseregulardelivery':
-            res = await isRegularDeliveryFunc.isRegularDelivery(event);
+        case '/account':
+            switch (method) {
+                case 'DELETE':
+                    res = await require('./account/account-delete').main(event);
+                    break;
+            }
             break;
-        case '/registerquestion':
-            res = await registerQuestionFunc.registerQuestion(event);
+        case '/answer':
+            switch (method) {
+                case 'POST':
+                    res = await require('./answer/answer-post').main(event);
+                    break;
+            }
             break;
-        case '/getallquestion':
-            res = await getAllQuestionFunc.getAllQuestion(event);
+        case '/question':
+            switch (method) {
+                case 'GET':
+                    res = await require('./question/question-get').main(event);
+                    break;
+                case 'POST':
+                    res = await require('./question/question-post').main(event);
+                    break;
+            }
             break;
-        case '/getquestion':
-            res = await getQuestionFunc.getQuestion(event);
-            break;
-        case '/registerimage':
-            res = await registerImageFunc.registerImage(event);
-            break;
-        case '/postquestion':
-            res = await postQuestionFunc.postQuestion(event);
-            break;
-        case '/postanswer':
-            res = await postAnswerFunc.postQuestion(event);
-            break;
-        case '/loggedin':
-            res = await loggedInFunc.loggedIn(event);
-            break;
-        case '/deleteaccount':
-            res = await deleteAccountFunc.deleteAccount(event);
+        case '/regularTweet':
+            switch (method) {
+                case 'POST':
+                    res = await require('./regularTweet/regularTweet-post').main(event);
+                    break;
+            }
             break;
     }
 

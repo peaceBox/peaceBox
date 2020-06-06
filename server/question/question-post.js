@@ -6,8 +6,8 @@ const dynamoDocument = new AWS.DynamoDB.DocumentClient();
 
 const callback = 'https://api.peacebox.sugokunaritai.dev';
 
-exports.postQuestion = async (event) => {
-  const others = require('./others');
+exports.main = async (event) => {
+  const others = require('../others');
   const data = JSON.parse(event.body);
   const questionerUserId = data.questionerUserId;
   const answererUserId = data.answererUserId;

@@ -1,16 +1,20 @@
 const AWS = require('aws-sdk');
 const dynamoDocument = new AWS.DynamoDB.DocumentClient();
 
-exports.getQuestion = async (event) => {
-  // const others = require('./others');
+exports.main = async (event) => {
+  const others = require('../others');
+  const data = JSON.parse(event.body).data;
+  const isRegularDelivery = data.isRegularDelivery; //
+  const userId = data.userId;
 
-  const params = event.queryStringParameters;
-  const questionId = params.questionId;
-
-  /* const isLoggedIn = others.isLoggedIn(event, userId);
+  const isLoggedIn = others.isLoggedIn(event, userId);
   if (isLoggedIn === 'authorizationError') {
     const response = {
       statusCode: 401,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true
+      },
       body: JSON.stringify('Authorization Error!!')
     };
     return response;
@@ -19,25 +23,29 @@ exports.getQuestion = async (event) => {
       statusCode: 302,
       headers: {
         'Location': 'https://api.peacebox.sugokunaritai.dev/authorize?type=logIn',
-        'Access-Control-Allow-Origin': '*'
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true
       },
       body: ''
     };
     return response;
-  }*/
+  }
 
   const param = {
-    TableName: 'peaceBoxQuestionTable',
-    KeyConditionExpression: '#k = :val',
-    ExpressionAttributeValues: {
-      ':val': questionId
+    TableName: 'peaceBoxUserTable',
+    Key: { // 更新したい項目をプライマリキー(及びソートキー)によって１つ指定
+      userId: userId
     },
     ExpressionAttributeNames: {
-      '#k': 'questionId'
-    }
+      '#r': 'isRegularDelivery',
+    },
+    ExpressionAttributeValues: {
+      ':isRegularDelivery': isRegularDelivery
+    },
+    UpdateExpression: 'SET #r = :isRegularDelivery'
   };
-  const promise = await new Promise((resolve, reject) => {
-    dynamoDocument.query(param, (err, data) => {
+  await new Promise((resolve, reject) => {
+    dynamoDocument.update(param, (err, data) => {
       if (err) {
         reject(err);
         const response = {
@@ -54,25 +62,14 @@ exports.getQuestion = async (event) => {
       }
     });
   });
-  const data = promise.Items[0];
-
-  const question = data.question;
-  const answer = data.answer;
-  const questionerScreenName = data.questionerScreenName;
-  const answererScreenName = data.answererScreenName;
-
   const response = {
-    statusCode: 200,
+    statusCode: 302,
     headers: {
+      'Location': 'https://peacebox.sugokunaritai.dev',
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Credentials': true
     },
-    body: JSON.stringify({
-      answer: answer,
-      questionerScreenName: questionerScreenName,
-      answererScreenName: answererScreenName,
-      question: question
-    })
+    body: ''
   };
   return response;
 };

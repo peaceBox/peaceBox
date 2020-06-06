@@ -5,8 +5,8 @@ const crypto = require('crypto');
 const AWS = require('aws-sdk');
 const dynamoDocument = new AWS.DynamoDB.DocumentClient();
 
-exports.callback = async (event) => {
-  // const others = require('./others');
+exports.main = async (event) => {
+  // const others = require('../others');
 
   const dt = new Date();
   console.log(event);

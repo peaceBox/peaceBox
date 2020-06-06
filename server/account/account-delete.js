@@ -1,11 +1,11 @@
 const AWS = require('aws-sdk');
 const dynamoDocument = new AWS.DynamoDB.DocumentClient();
 
-exports.deleteAccount = async (event) => {
+exports.main = async (event) => {
   const params = event.queryStringParameters;
   const userId = params.userId;
 
-  const others = require('./others');
+  const others = require('../others');
 
   const isLoggedIn = others.isLoggedIn(event, userId);
   if (isLoggedIn === 'authorizationError' || isLoggedIn === 'expired') {
