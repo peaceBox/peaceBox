@@ -228,7 +228,7 @@ const logIn = async (event, userOauthToken, oauthTokenSecret, userId, accessToke
   const response = {
     statusCode: 302,
     headers: {
-      'Location': (referer === 'http://localhost/') ? 'http://localhost:3000' : 'https://peacebox.sugokunaritai.dev',
+      'Location': (referer === 'http://localhost/') ? 'http://localhost:8080' : 'https://peacebox.sugokunaritai.dev',
       // 'Location': 'http://takanawa2019.shinbunbun.info',
       // 'Set-Cookie': `accessToken=${accessToken}; HttpOnly; max-age=86400`
       // 'Set-Cookie': `accessToken=${accessToken}; HttpOnly; Secure; max-age=86400; domain=peacebox.sugokunaritai.dev`
@@ -375,7 +375,7 @@ const postQuestion = async (event, oauthToken, dt, screenName, referer) => {
   const response = {
     statusCode: 302,
     headers: {
-      'Location': (referer === 'http://localhost/') ? `http://localhost:3000/${screenName}/${questionId}?type=posted` : `https://peacebox.sugokunaritai.dev/${screenName}/${questionId}?type=posted`,
+      'Location': (referer === 'http://localhost/') ? `http://localhost:8080/${screenName}/${questionId}?type=posted` : `https://peacebox.sugokunaritai.dev/${screenName}/${questionId}?type=posted`,
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Credentials': true
     },
@@ -470,7 +470,7 @@ const postAnswer = async (event, oauthToken, referer) => {
   const response = {
     statusCode: 200,
     headers: {
-      'Location': (referer === 'http://localhost/') ? 'http://localhost:3000' : 'https://peacebox.sugokunaritai.dev',
+      'Location': (referer === 'http://localhost/') ? 'http://localhost:8080' : 'https://peacebox.sugokunaritai.dev',
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Credentials': true
     },
