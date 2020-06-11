@@ -7,7 +7,7 @@ const crypto = require('crypto');
 exports.main = async (event) => {
 
   const host = event.headers.Host;
-  const cors = (host === 'api.peacebox.sugokunaritai.dev') ? 'https://peacebox.sugokunaritai.dev' : 'http://192.168.1.10:8080';
+  const cors = (host === 'api.peacebox.sugokunaritai.dev') ? 'https://peacebox.sugokunaritai.dev' : 'http://192.168.10.157:8080';
   const callback = (host === 'api.peacebox.sugokunaritai.dev') ? 'https://api.peacebox.sugokunaritai.dev/callback' : 'https://dev.api.peacebox.sugokunaritai.dev/callback';
 
   /* const dt = new Date();

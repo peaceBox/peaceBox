@@ -3,7 +3,7 @@ module.exports.hello = async (event) => {
     const path = event.path;
     const method = event.httpMethod;
     const host = event.headers.Host;
-    const cors = (host === 'api.peacebox.sugokunaritai.dev') ? 'https://peacebox.sugokunaritai.dev' : 'http://192.168.1.10:8080';
+    const cors = (host === 'api.peacebox.sugokunaritai.dev') ? 'https://peacebox.sugokunaritai.dev' : 'http://192.168.10.157:8080';
     console.log(cors);
     // レスポンスを定義
     let res;
