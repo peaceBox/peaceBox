@@ -4,9 +4,12 @@ const crypto = require('crypto');
 // const AWS = require('aws-sdk');
 // const dynamoDocument = new AWS.DynamoDB.DocumentClient();
 
-const callback = 'https://api.peacebox.sugokunaritai.dev';
-
 exports.main = async (event) => {
+
+  const host = event.headers.Host;
+  const cors = (host === 'api.peacebox.sugokunaritai.dev') ? 'https://peacebox.sugokunaritai.dev' : 'http://192.168.1.10:8080';
+  const callback = (host === 'api.peacebox.sugokunaritai.dev') ? 'https://api.peacebox.sugokunaritai.dev/callback' : 'https://dev.api.peacebox.sugokunaritai.dev/callback';
+
   /* const dt = new Date();
 
   const params = event.queryStringParameters;*/
@@ -38,7 +41,7 @@ exports.main = async (event) => {
     url: 'https://api.twitter.com/oauth/request_token',
     method: 'POST',
     data: {
-      'oauth_callback': `${callback}/callback`
+      'oauth_callback': `${callback}`
     }
   };
 
@@ -119,7 +122,7 @@ exports.main = async (event) => {
       'Location': `https://api.twitter.com/oauth/authenticate?oauth_token=${oauthToken}`
     },
     multiValueHeaders: {
-      'Set-Cookie': [`oauth_token=${oauthToken}; HttpOnly; Secure`, 'type=logIn; HttpOnly; Secure', `referer=${event.headers.referer}; HttpOnly; Secure`]
+      'Set-Cookie': [`oauth_token=${oauthToken}; HttpOnly; Secure`, 'type=logIn; HttpOnly; Secure', `referer=${cors}; HttpOnly; Secure`]
     }
   };
   return response;
