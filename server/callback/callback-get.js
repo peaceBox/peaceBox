@@ -226,12 +226,12 @@ const logIn = async (event, userOauthToken, oauthTokenSecret, userId, accessToke
   const profileImageUrl = tokenResponse.data.profile_image_url_https.replace(/_normal/g, '');
   console.log(tokenResponse.data);
 
-  const domain = (referer === 'http://192.168.10.157:8080') ? 'api.peacebox.sugokunaritai.dev' : 'peacebox.sugokunaritai.dev';
+  const domain = (referer === 'http://192.168.10.157:3000') ? 'api.peacebox.sugokunaritai.dev' : 'peacebox.sugokunaritai.dev';
 
   const response = {
     statusCode: 302,
     headers: {
-      'Location': (referer === 'http://192.168.10.157:8080') ? 'http://192.168.10.157:8080' : 'https://peacebox.sugokunaritai.dev',
+      'Location': (referer === 'http://192.168.10.157:3000') ? 'http://192.168.10.157:3000' : 'https://peacebox.sugokunaritai.dev',
       // 'Location': 'http://takanawa2019.shinbunbun.info',
       // 'Set-Cookie': `accessToken=${accessToken}; HttpOnly; max-age=86400`
       // 'Set-Cookie': `accessToken=${accessToken}; HttpOnly; Secure; max-age=86400; domain=peacebox.sugokunaritai.dev`
@@ -378,7 +378,7 @@ const postQuestion = async (event, oauthToken, dt, screenName, referer) => {
   const response = {
     statusCode: 302,
     headers: {
-      'Location': (referer === 'http://192.168.10.157:8080') ? `http://192.168.10.157:8080/${screenName}/${questionId}?type=posted` : `https://peacebox.sugokunaritai.dev/${screenName}/${questionId}?type=posted`,
+      'Location': (referer === 'http://192.168.10.157:3000') ? `http://192.168.10.157:3000/${screenName}/${questionId}?type=posted` : `https://peacebox.sugokunaritai.dev/${screenName}/${questionId}?type=posted`,
       'Access-Control-Allow-Origin': '*'
     },
     body: JSON.stringify({
@@ -472,7 +472,7 @@ const postAnswer = async (event, oauthToken, referer) => {
   const response = {
     statusCode: 200,
     headers: {
-      'Location': (referer === 'http://192.168.10.157:8080') ? 'http://192.168.10.157:8080' : 'https://peacebox.sugokunaritai.dev',
+      'Location': (referer === 'http://192.168.10.157:3000') ? 'http://192.168.10.157:3000' : 'https://peacebox.sugokunaritai.dev',
       'Access-Control-Allow-Origin': '*'
     },
     body: ''
