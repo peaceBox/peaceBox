@@ -240,13 +240,24 @@ const logIn = async (event, userOauthToken, oauthTokenSecret, userId, accessToke
       'Set-Cookie': [
         'oauth_token=0; max-age=0',
         'type=0; max-age=0',
+        `accessToken=${accessToken}; HttpOnly; max-age=86400; domain=${domain}`,
+        `userId=${userId}; max-age=86400; domain=${domain}`,
+        `screenName=${screenName}; max-age=86400; domain=${domain}`,
+        `name=${encodeURI(name)}; max-age=86400; domain=${domain}`,
+        `profileImageUrl=${profileImageUrl}; max-age=86400; domain=${domain}`
+      ]
+    },
+    /* multiValueHeaders: {
+      'Set-Cookie': [
+        'oauth_token=0; max-age=0',
+        'type=0; max-age=0',
         `accessToken=${accessToken}; HttpOnly; Secure; max-age=86400; domain=${domain}`,
         `userId=${userId}; Secure; max-age=86400; domain=${domain}`,
         `screenName=${screenName}; Secure; max-age=86400; domain=${domain}`,
         `name=${encodeURI(name)}; Secure; max-age=86400; domain=${domain}`,
         `profileImageUrl=${profileImageUrl}; Secure; max-age=86400; domain=${domain}`
       ]
-    },
+    },*/
     body: ''
   };
   return response;
