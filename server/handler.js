@@ -6,6 +6,20 @@ module.exports.hello = async (event) => {
     const cors = (host === 'api.peacebox.sugokunaritai.dev') ? 'https://peacebox.sugokunaritai.dev' : 'http://localhost:8080';
     // レスポンスを定義
     let res;
+
+    if (method === 'OPTIONS') {
+        res = {
+            statusCode: 200,
+            headers: {
+                'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+                'Access-Control-Allow-Methods': 'POST, GET, OPTIONS, DELETE',
+                'Access-Control-Allow-Origin': cors
+            },
+            body: ''
+        };
+        return res;
+    }
+
     // パスによって条件分岐
     switch (path) {
         case '/authorize':
