@@ -472,7 +472,7 @@ const postAnswer = async (event, oauthToken, referer) => {
   const response = {
     statusCode: 200,
     headers: {
-      'Location': (referer === 'http://localhost/') ? 'http://192.168.10.157:8080' : 'https://peacebox.sugokunaritai.dev',
+      'Location': (referer === 'http://192.168.10.157:8080') ? 'http://192.168.10.157:8080' : 'https://peacebox.sugokunaritai.dev',
       'Access-Control-Allow-Origin': '*'
     },
     body: ''
