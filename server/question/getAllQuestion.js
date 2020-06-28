@@ -30,7 +30,7 @@ exports.main = async (event) => {
 
   const param = {
     TableName: 'peaceBoxQuestionTable',
-    IndexName: 'questionerUserId-index',
+    IndexName: 'answererUserId-index',
     KeyConditionExpression: '#k = :val',
     ExpressionAttributeValues: {
       ':val': answererUserId

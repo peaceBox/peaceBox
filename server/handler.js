@@ -1,9 +1,10 @@
 module.exports.hello = async (event) => {
+    console.log(event);
     // パスを取得
     const path = event.path;
     const method = event.httpMethod;
     const host = event.headers.Host;
-    const cors = (host === 'api.peacebox.sugokunaritai.dev') ? 'https://peacebox.sugokunaritai.dev' : 'http://192.168.1.10:8080';
+    const cors = (host === 'api.peacebox.sugokunaritai.dev') ? 'https://peacebox.sugokunaritai.dev' : 'https://dev.peacebox.sugokunaritai.dev';
     console.log(cors);
     // レスポンスを定義
     let res;
@@ -14,11 +15,22 @@ module.exports.hello = async (event) => {
             headers: {
                 'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
                 'Access-Control-Allow-Methods': 'POST, GET, OPTIONS, DELETE',
-                'Access-Control-Allow-Origin': cors
+                'Access-Control-Allow-Origin': cors,
+                'Access-Control-Allow-Credentials': true
             },
             body: ''
         };
         return res;
+    }
+
+    if (path !== '/authorize' && path !== '/callback') {
+        if (event.headers['X-Requested-With'] !== 'XMLHttpRequest') {
+            res = {
+                statusCode: 418,
+                body: ''
+            };
+            return res;
+        }
     }
 
     // パスによって条件分岐
@@ -70,11 +82,11 @@ module.exports.hello = async (event) => {
             break;
     }
 
-    console.log(res);
-
     if (res['headers']['Access-Control-Allow-Origin']) {
         res['headers']['Access-Control-Allow-Origin'] = cors;
     }
+
+    console.log(res);
 
     return res;
 };

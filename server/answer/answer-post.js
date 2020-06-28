@@ -4,9 +4,11 @@ const crypto = require('crypto');
 const AWS = require('aws-sdk');
 const dynamoDocument = new AWS.DynamoDB.DocumentClient();
 
-const callback = 'https://api.peacebox.sugokunaritai.dev';
-
 exports.main = async (event) => {
+
+  const host = event.headers.Host;
+  const callback = (host === 'api.peacebox.sugokunaritai.dev') ? 'https://api.peacebox.sugokunaritai.dev/callback' : 'https://api.dev.peacebox.sugokunaritai.dev/callback';
+
   const dt = new Date();
 
   const params = event.queryStringParameters;
@@ -27,7 +29,7 @@ exports.main = async (event) => {
     url: 'https://api.twitter.com/oauth/request_token',
     method: 'POST',
     data: {
-      'oauth_callback': `${callback}/callback`
+      'oauth_callback': `${callback}`
     }
   };
 

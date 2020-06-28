@@ -4,13 +4,15 @@ const OAuth = require('oauth-1.0a');
 const crypto = require('crypto');
 const dynamoDocument = new AWS.DynamoDB.DocumentClient();
 
-const callback = 'https://api.peacebox.sugokunaritai.dev';
 
 exports.main = async (event) => {
   const others = require('../others');
   const data = JSON.parse(event.body);
   const questionerUserId = data.questionerUserId;
   const answererUserId = data.answererUserId;
+
+  const host = event.headers.Host;
+  const callback = (host === 'api.peacebox.sugokunaritai.dev') ? 'https://api.peacebox.sugokunaritai.dev/callback' : 'https://api.dev.peacebox.sugokunaritai.dev/callback';
 
   const isLoggedIn = others.isLoggedIn(event, questionerUserId);
   if (isLoggedIn === 'authorizationError') {
@@ -54,7 +56,7 @@ exports.main = async (event) => {
     url: 'https://api.twitter.com/oauth/request_token',
     method: 'POST',
     data: {
-      'oauth_callback': `${callback}/callback`
+      'oauth_callback': `${callback}`
     }
   };
 
